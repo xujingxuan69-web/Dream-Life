@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: af6413968d094e14881e3efa2e09a123
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - hitMat: {instanceID: 0}
+  - stunVortex: {fileID: 4380750252800180132, guid: bd941bec8ac23b9498aa35c4722138ee, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
