@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.IO.LowLevel.Unsafe;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Entity : MonoBehaviour
@@ -9,8 +10,9 @@ public class Entity : MonoBehaviour
     public int facingDir { get; private set; } = 1;
     protected bool facingRight = true;
 
-
     public float gravity = 2;
+
+    private RigidbodyConstraints2D originalConstraints;
 
     [Header("Knockback Info")]
     [SerializeField] protected Vector2 knockbackDirection;
@@ -29,23 +31,29 @@ public class Entity : MonoBehaviour
     [SerializeField] protected LayerMask whatIsGround;
 
     #region Components
+    public EntityFx fx { get; private set; }
     public Animator anim { get; private set; }
     public Rigidbody2D rb { get; private set; }
-
-    public EntityFx fx { get; private set; }
+    public SpriteRenderer[] sr { get; private set; }
+    public Collider2D[] colliders { get; private set; }
+    public CharacterStats stats { get; private set; }
     #endregion
 
     protected virtual void Awake()
     {
-
     }
 
     protected virtual void Start()
     {
-        anim = GetComponentInChildren<Animator>();
-        rb = GetComponent<Rigidbody2D>();
         fx = GetComponent<EntityFx>();
+        rb = GetComponent<Rigidbody2D>();
+        colliders = GetComponents<Collider2D>();
+        anim = GetComponentInChildren<Animator>();
+        sr = GetComponentsInChildren<SpriteRenderer>();
+        stats = GetComponent<CharacterStats>();
+
         rb.gravityScale = gravity;
+        originalConstraints = rb.constraints;
     }
 
     protected virtual void Update()
@@ -68,6 +76,15 @@ public class Entity : MonoBehaviour
         yield return new WaitForSeconds(knockbackDuration);
 
         isKnocked = false;
+    }
+
+    public void ConstraintsFreeze(bool _freeze) => rb.constraints = _freeze ? 
+        rb.constraints = RigidbodyConstraints2D.FreezeAll : rb.constraints = originalConstraints; 
+
+    public void CollidersFreeze(bool _freeze)
+    {
+        for (int i = 0; i < colliders.Length; i++)
+            colliders[i].enabled = !_freeze;
     }
 
     #region Velocity
@@ -144,4 +161,18 @@ public class Entity : MonoBehaviour
         Gizmos.DrawWireSphere(attackCheck.position, attackCheckRadius);
     }
     #endregion
+
+    public void MakeTransparent(bool _Transparent)  //瞬间隐形
+    {
+        if (_Transparent)
+        {
+            for (int i =0; i < sr.Length; i++)  //for的性能略优于foreach，所以在此使用
+                sr[i].color = Color.clear;
+        }
+        else
+        {
+            for (int i = 0; i < sr.Length; i++)
+                sr[i].color = Color.white;
+        }
+    }
 }

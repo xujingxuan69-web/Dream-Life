@@ -13,15 +13,7 @@ public class PlayerDashState : PlayerState
         base.Enter();
         player.playerFx.StopTearsAttack();
 
-        if (PlayerManager.instance.attackDash)
-        {
-            player.skill.clone.CreateClone(player.transform, player.facingDir, PlayerManager.instance.comboCounter);
-            PlayerManager.instance.attackDash = false;
-        }
-        else
-        {
-            player.skill.clone.CreateClone(player.transform, player.facingDir);
-        }
+        player.skill.clone.CreateCloneOnDashStart();
             
         rb.gravityScale = 0;
 

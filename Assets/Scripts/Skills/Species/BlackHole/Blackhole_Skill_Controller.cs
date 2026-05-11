@@ -16,7 +16,8 @@ public class Blackhole_Skill_Controller : MonoBehaviour
 
     private bool canGrow = false;
     private bool canDestroy = false;
-    private bool canAttack = false;
+    private bool cloneAttackRealeased = false;
+    public bool playerStopDisappear { get; private set; } = false;
 
     private int attacksAmount;
 
@@ -41,6 +42,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
             transform.localScale = Vector2.Lerp(transform.localScale, new Vector2(-1, -1), growSpeed * Time.deltaTime);
             if (transform.localScale.x < originSize)
             {
+                SkillManager.instance.blackhole.SetCooldownOn(true);
                 Destroy(gameObject);
             }
         }
@@ -51,7 +53,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
         canGrow = true;
 
         canDestroy = false;
-        canAttack = false;
+        cloneAttackRealeased = false;
 
         originSize = _originalSize;
         maxSize = _maxsize;
@@ -76,11 +78,15 @@ public class Blackhole_Skill_Controller : MonoBehaviour
     private void BlackholeDestroy()
     {
         canGrow = false;
-        canAttack = false;
+        cloneAttackRealeased = false;
         canDestroy = true;
+
+        playerStopDisappear = true;
 
         if (targets == null)
             return;
+
+        targets.RemoveAll(enemy => enemy == null);
 
         foreach (var enemy in targets)
         {
@@ -91,7 +97,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
     #region CloneAttack
     private void CloneAttackLogic()
     {
-        if (cloneAttackTimer <= 0 && canAttack)
+        if (cloneAttackTimer <= 0 && cloneAttackRealeased && attacksAmount > 0)
         {
             if (targets.Count <= 0)
             {
@@ -100,11 +106,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
             }
 
             cloneAttackTimer = cloneAttackCooldown;
-
             CloneRandom();
-
-            
-
 
             targets.RemoveAll(enemy => enemy == null);
             if (targets.Count <= 0)
@@ -121,7 +123,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
 
             if (attacksAmount <= 0)
             {
-                canAttack = false;
+                cloneAttackRealeased = false;
                 Invoke("BlackholeDestroy", 1f);
             }
         }
@@ -143,7 +145,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
         randAttackCount = Random.Range(1, 4);
     }
 
-    private void AttackTrigger() => canAttack = true;
+    private void AttackTrigger() => cloneAttackRealeased = true;
     #endregion
     #region Trigger
     private void OnTriggerEnter2D(Collider2D collision)

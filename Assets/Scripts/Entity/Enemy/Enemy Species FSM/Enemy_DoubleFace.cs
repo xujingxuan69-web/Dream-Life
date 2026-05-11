@@ -55,9 +55,9 @@ public class Enemy_DoubleFace : Enemy
         IsPlayerHit = hit && ((1 << hit.collider.gameObject.layer) & whatIsPlayer) > 0 ? true : false;
     }
 
-    public override bool CanBeStunned()
+    public override bool CanBeStunned(int _counterAttackDir)
     {
-        if(base.CanBeStunned())
+        if(base.CanBeStunned(_counterAttackDir))
         {
             stateMachine.ChangeState(stunState);
             return true;

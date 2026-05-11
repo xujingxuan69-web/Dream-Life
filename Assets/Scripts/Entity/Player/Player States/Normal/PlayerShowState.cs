@@ -23,8 +23,10 @@ public class PlayerShowState : PlayerState
         base.Exit();
 
         PlayerManager.instance.canDash = true;
-        rb.constraints = RigidbodyConstraints2D.None;
-        player.GetComponent<Collider2D>().enabled = true;
+        player.ConstraintsFreeze(false);
+        player.CollidersFreeze(false);
+
+        player.SetVelocity(0, 0); 
     }
 
     public override void Update()
@@ -32,6 +34,6 @@ public class PlayerShowState : PlayerState
         base.Update();
 
         if (triggerCalled)
-            stateMachine.ChangeState(player.idleState);
+            stateMachine.ChangeState(player.airState);
     }
 }

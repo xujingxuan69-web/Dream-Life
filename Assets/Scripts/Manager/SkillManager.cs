@@ -29,6 +29,7 @@ public class SkillManager : MonoBehaviour
         dash = GetComponent<Dash_Skill>();
         clone = GetComponent<Clone_Skill>();
         tears = GetComponent<Tears_Skill>();
+        blackhole = GetComponent<Blackhole_Skill>();
     }
 
     private void Update()

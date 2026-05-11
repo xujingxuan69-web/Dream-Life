@@ -18,8 +18,9 @@ public class PlayerDisappearState : PlayerState
         base.Enter();
 
         PlayerManager.instance.canDash = false;
-        rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        player.GetComponent<Collider2D>().enabled = false;
+        player.ConstraintsFreeze(true);
+        player.CollidersFreeze(true);  
+        //锁定角色，无法被攻击与移动
     }
 
     public override void Exit()
@@ -30,5 +31,10 @@ public class PlayerDisappearState : PlayerState
     public override void Update()
     {
         base.Update();
+
+        if (player.skill.blackhole.SkillCompleted())
+        {
+            stateMachine.ChangeState(player.showState);
+        }
     }
 }

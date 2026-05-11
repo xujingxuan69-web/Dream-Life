@@ -12,9 +12,7 @@ public class PlayerTearsAimState : PlayerState
     {
         base.Enter();
 
-        stateTimer = 0.5f;
-
-        
+        stateTimer = 0.5f;  
     }
 
     public override void Exit()

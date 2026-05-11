@@ -144,6 +144,8 @@ public class Player : Entity
         CheckForDashInput();
     }
 
+    
+
     public override void Damage(int attackerDirection)
     {
         base.Damage(attackerDirection);

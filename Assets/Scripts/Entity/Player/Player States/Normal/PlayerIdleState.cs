@@ -57,5 +57,10 @@ public class PlayerIdleState : PlayerGroundedState
         {
             stateMachine.ChangeState(player.counterAttackState);
         }
+
+        if (Input.GetKeyDown(KeyCode.N) && player.skill.blackhole.CanUseSkill())
+        {
+            stateMachine.ChangeState(player.disappearState);
+        }
     }
 }

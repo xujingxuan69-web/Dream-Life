@@ -2958,6 +2958,7 @@ GameObject:
   - component: {fileID: 600393038}
   - component: {fileID: 600393037}
   - component: {fileID: 600393039}
+  - component: {fileID: 600393040}
   m_Layer: 11
   m_Name: Enemy_DoubleFace
   m_TagString: Untagged
@@ -3041,7 +3042,7 @@ MonoBehaviour:
     m_Bits: 8
   stunDuration: 1
   stunIdleDuration: 0.7
-  stunDirection: {x: 0.2, y: 0.1}
+  stunDirection: {x: 1, y: 1}
   counterImage: {fileID: 974064278}
   moveSpeed: 1.5
   idleTime: 2
@@ -3118,6 +3119,21 @@ MonoBehaviour:
   flashDuration: 0.1
   stunVortex: {fileID: 4380750252800180132, guid: bd941bec8ac23b9498aa35c4722138ee, type: 3}
   heightOffset: 0.25
+--- !u!114 &600393040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600393032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31a28554ebd251b40af573b852f9f1c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
+  maxHealth: 100
+  currentHealth: 0
 --- !u!1 &607640078
 GameObject:
   m_ObjectHideFlags: 0
@@ -5001,6 +5017,8 @@ MonoBehaviour:
   clonePrefab: {fileID: 1810382214083426429, guid: 8b4ff937b7272564fb086942681d5dcc, type: 3}
   cloneDuration: 0
   canAttack: 1
+  createCloneOnDashStart: 0
+  createCloneOnCounterAttack: 0
 --- !u!114 &1397271739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5043,10 +5061,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bdaf92bd1d80ff48bc176511e1cc6b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cooldown: 10
+  cooldown: 2
   blackholePrefab: {fileID: 6358677543366605095, guid: a64e639a324398d48bec1e05273cc361, type: 3}
   originalSize: 0.05
   maxSize: 1.2
+  offset: {x: 0, y: 0.35}
   attacksAmount: 3
 --- !u!1 &1399675390
 GameObject:
@@ -5748,6 +5767,7 @@ GameObject:
   - component: {fileID: 1756099098}
   - component: {fileID: 1756099102}
   - component: {fileID: 1756099103}
+  - component: {fileID: 1756099104}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -5997,6 +6017,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tears: {fileID: 571610135}
+--- !u!114 &1756099104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756099092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31a28554ebd251b40af573b852f9f1c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
+  maxHealth: 100
+  currentHealth: 0
 --- !u!1 &1797926924
 GameObject:
   m_ObjectHideFlags: 0

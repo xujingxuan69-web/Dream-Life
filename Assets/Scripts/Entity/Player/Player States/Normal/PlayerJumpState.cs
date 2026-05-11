@@ -43,5 +43,10 @@ public class PlayerJumpState : PlayerState
         {
             stateMachine.ChangeState(player.squatEnterState);
         }
+
+        if (Input.GetKeyDown(KeyCode.N) && player.skill.blackhole.CanUseSkill())
+        {
+            stateMachine.ChangeState(player.disappearState);
+        }
     }
 }

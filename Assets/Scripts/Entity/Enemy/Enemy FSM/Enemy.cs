@@ -70,12 +70,12 @@ public class Enemy : Entity
         if (_timeFrozen)
         {
             anim.speed = 0;
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            ConstraintsFreeze(true);
         }
         else
         {
             anim.speed = 1;
-            rb.constraints = RigidbodyConstraints2D.None;
+            ConstraintsFreeze(false);
         }
     }
 
@@ -96,14 +96,17 @@ public class Enemy : Entity
 
         if (Vector2.Distance(_pullPos, transform.position) < 0.1f)
         {
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            ConstraintsFreeze(true);
             return;
         }
 
         if (groundEnemy && IsGroundDetected())
         {
             if (Mathf.Abs(_pullPos.x - transform.position.x) < 0.1f)
+            {
+                ConstraintsFreeze(true);
                 return;
+            }
 
             float dirX = Mathf.Sign(_pullPos.x - transform.position.x);
             rb.AddForce(new Vector2(dirX * _pullForce, 0));
@@ -124,7 +127,7 @@ public class Enemy : Entity
     {
         anim.speed = 1;
         rb.gravityScale = gravity;
-        rb.constraints = RigidbodyConstraints2D.None;
+        ConstraintsFreeze(false);
     }
     #endregion
 
@@ -142,9 +145,9 @@ public class Enemy : Entity
     }
     #endregion
 
-    public virtual bool CanBeStunned()
+    public virtual bool CanBeStunned(int _counterAttackDir)
     {
-        if (canBeStunned)
+        if (canBeStunned && _counterAttackDir * -1 == facingDir)
         {
             CloseCounterAttackWindow();
             return true;

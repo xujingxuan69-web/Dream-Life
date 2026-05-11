@@ -59,6 +59,15 @@ public class Tears_Skill : Skill
         SetupGravity();
     }
 
+    protected override void Update()
+    {
+        base.Update();
+        if (Input.GetKeyUp(KeyCode.M))
+        {
+            finalDir = new Vector2(AimDirection().normalized.x * launchForce.x, AimDirection().normalized.y * launchForce.y);
+        }
+    }
+
     private void SetupGravity()
     {
         if (tearsType == TearsType.Bounce)
@@ -68,14 +77,6 @@ public class Tears_Skill : Skill
         else if (tearsType == TearsType.Pierce)
         {
             tearsGravity = pierceGravity;
-        }
-    }
-
-    protected override void Update()
-    {
-        if(Input.GetKeyUp(KeyCode.M))
-        {
-            finalDir = new Vector2(AimDirection().normalized.x * launchForce.x, AimDirection().normalized.y * launchForce.y);
         }
     }
 

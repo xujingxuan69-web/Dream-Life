@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerCounterAttackState : PlayerState
 {
+    private bool canCreateClone;
+
     public PlayerCounterAttackState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName) : base(_player, _stateMachine, _animBoolName)
     {
     }
@@ -12,17 +14,20 @@ public class PlayerCounterAttackState : PlayerState
     {
         base.Enter();
 
+        canCreateClone = true;
         stateTimer = player.counterAttackDuration;
 
         player.SetVelocity(0, rb.velocity.y);
 
         player.SetCounterAttackTimer();
+
+        player.anim.SetBool("SuccessCounterAttack", false);
     }
 
     public override void Exit()
     {
         base.Exit();
-        player.anim.SetBool("SuccessCounterAttack", false);
+        
     }
 
     public override void Update()
@@ -35,10 +40,16 @@ public class PlayerCounterAttackState : PlayerState
         {
             if (hit.GetComponent<Enemy>() != null)
             {
-                if (hit.GetComponent<Enemy>().CanBeStunned())
+                if (hit.GetComponent<Enemy>().CanBeStunned(player.facingDir))
                 {
                     stateTimer = 10;
                     player.anim.SetBool("SuccessCounterAttack", true);
+
+                    if (canCreateClone)
+                    {
+                        canCreateClone = false;
+                        player.skill.clone.CreateCloneOnCounterAttack(hit.transform, player.facingDir);
+                    }
                 }
             }
         }
