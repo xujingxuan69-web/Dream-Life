@@ -14,8 +14,8 @@ TagManager:
   - 
   - 
   - Player
-  - 
-  - 
+  - Fx
+  - HitFx
   - Enemy
   - 
   - 
@@ -43,6 +43,9 @@ TagManager:
     locked: 0
   - name: Background
     uniqueID: 3325406271
+    locked: 0
+  - name: BgFx
+    uniqueID: 3053128113
     locked: 0
   - name: Ground
     uniqueID: 2165026633

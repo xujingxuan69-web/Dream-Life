@@ -10,6 +10,7 @@ public class PlayerManager : MonoBehaviour
     public int comboCounter;
     public bool attackDash;
 
+    public bool canDash = true;    //PlayerÖÐ·ÀÖ¹±»Dash´ò¶Ï×´Ì¬
 
     private void Awake()
     {

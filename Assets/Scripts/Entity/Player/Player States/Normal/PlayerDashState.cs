@@ -15,12 +15,12 @@ public class PlayerDashState : PlayerState
 
         if (PlayerManager.instance.attackDash)
         {
-            player.skill.clone.CreateClone(player.transform, PlayerManager.instance.comboCounter);
+            player.skill.clone.CreateClone(player.transform, player.facingDir, PlayerManager.instance.comboCounter);
             PlayerManager.instance.attackDash = false;
         }
         else
         {
-            player.skill.clone.CreateClone(player.transform);
+            player.skill.clone.CreateClone(player.transform, player.facingDir);
         }
             
         rb.gravityScale = 0;

@@ -77,7 +77,7 @@ public class Entity : MonoBehaviour
         {
             return;
         }
-        rb.velocity = new Vector2(0, 0);
+        rb.velocity = new Vector2(0, rb.velocity.y);
     }
 
     public void SetVelocity(float _xVelocity, float _yVelocity)
@@ -94,6 +94,9 @@ public class Entity : MonoBehaviour
     #region Flip 
     public virtual void Flip()
     {
+        if (rb.constraints == RigidbodyConstraints2D.FreezeAll)
+            return;
+
         facingDir *= -1;
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);

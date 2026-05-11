@@ -42,7 +42,7 @@ public class PlayerAirState : PlayerState
             stateMachine.ChangeState(player.jumpState);
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             stateMachine.ChangeState(player.squatEnterState);
         }

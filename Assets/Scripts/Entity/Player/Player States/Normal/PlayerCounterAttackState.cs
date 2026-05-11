@@ -17,13 +17,12 @@ public class PlayerCounterAttackState : PlayerState
         player.SetVelocity(0, rb.velocity.y);
 
         player.SetCounterAttackTimer();
-
-        player.anim.SetBool("SuccessCounterAttack", false);
     }
 
     public override void Exit()
     {
         base.Exit();
+        player.anim.SetBool("SuccessCounterAttack", false);
     }
 
     public override void Update()
@@ -36,10 +35,8 @@ public class PlayerCounterAttackState : PlayerState
         {
             if (hit.GetComponent<Enemy>() != null)
             {
-                Debug.Log("AttackCounter not null");
                 if (hit.GetComponent<Enemy>().CanBeStunned())
                 {
-                    Debug.Log("AttackCounter Success! Timer:" + stateTimer);
                     stateTimer = 10;
                     player.anim.SetBool("SuccessCounterAttack", true);
                 }

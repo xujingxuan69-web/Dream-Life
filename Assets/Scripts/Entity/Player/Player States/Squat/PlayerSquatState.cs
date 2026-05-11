@@ -24,7 +24,7 @@ public class PlayerSquatState : PlayerState
 
         if (!player.IsHeadDeatected())
         {
-            if (Input.GetKeyDown(KeyCode.W))
+            if (Input.GetKeyDown(KeyCode.LeftControl))
             {
                 stateMachine.ChangeState(player.squatExitState);
                 return;

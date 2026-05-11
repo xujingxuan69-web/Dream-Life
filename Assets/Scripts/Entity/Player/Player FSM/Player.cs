@@ -53,7 +53,7 @@ public class Player : Entity
     #endregion
     #region States
     public PlayerStateMachine stateMachine { get; private set; }
-
+    #region normalState
     public PlayerIdleState idleState { get; private set; }
     public PlayerMoveState moveState { get; private set; }
     public PlayerJumpState jumpState { get; private set; }
@@ -68,16 +68,22 @@ public class Player : Entity
     public PlayerAttackTransState attackTransState { get; private set; }
     public PlayerCounterAttackState counterAttackState { get; private set; }
 
+    public PlayerDisappearState disappearState { get; private set; }
+    public PlayerShowState showState { get; private set; }
+    #endregion
+    #region squatState
     public PlayerSquatEnterState squatEnterState { get; private set; }
     public PlayerSquatIdleState squatIdleState { get; private set; }
     public PlayerSquatMoveState squatMoveState { get; private set; }
     public PlayerSquatJumpState squatJumpState { get; private set; }
     public PlayerSquatAirState squatAirState { get; private set; }
     public PlayerSquatExitState squatExitState { get; private set; }
-
+    #endregion
+    #region tearsState
     public PlayerTearsAimState tearsAimState { get; private set; }
     public PlayerTearsShootState tearsShootState { get; private set; }
     public PlayerTearsAttackState tearsAttackState { get; private set; }
+    #endregion
     #endregion
 
     #region playerFx
@@ -101,12 +107,16 @@ public class Player : Entity
         primaryAttackState = new PlayerPrimaryAttackState(this, stateMachine, "Attack");
         attackTransState = new PlayerAttackTransState(this, stateMachine, "AttackTrans");
         counterAttackState = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
+        disappearState = new PlayerDisappearState(this, stateMachine, "Disappear");
+        showState = new PlayerShowState(this, stateMachine, "Show");
+
         squatEnterState = new PlayerSquatEnterState(this, stateMachine, "SquatEnter");
         squatIdleState = new PlayerSquatIdleState(this, stateMachine, "Squat");
         squatMoveState = new PlayerSquatMoveState(this, stateMachine, "Squat");
         squatJumpState = new PlayerSquatJumpState(this, stateMachine, "Squat");
         squatAirState = new PlayerSquatAirState(this, stateMachine, "Squat");
         squatExitState = new PlayerSquatExitState(this, stateMachine, "SquatExit");
+
         tearsAimState = new PlayerTearsAimState(this, stateMachine, "TearsAim");
         tearsShootState = new PlayerTearsShootState(this, stateMachine, "TearsShoot");
         tearsAttackState = new PlayerTearsAttackState(this, stateMachine, "TearsAttack");
@@ -132,7 +142,6 @@ public class Player : Entity
         stateMachine.currentState.Update();
 
         CheckForDashInput();
-        
     }
 
     public override void Damage(int attackerDirection)
@@ -158,7 +167,7 @@ public class Player : Entity
 
     private void CheckForDashInput()
     {
-        if (stateMachine.currentState.IsAttackState() || (squatEnter && IsHeadDeatected()))
+        if (stateMachine.currentState.IsAttackState() || (squatEnter && IsHeadDeatected()) || !PlayerManager.instance.canDash)
             return;
 
 
@@ -171,9 +180,9 @@ public class Player : Entity
 
             stateMachine.ChangeState(dashState);
         }
-        else if (Input.GetKeyDown(KeyCode.L) && stateMachine.currentState == primaryAttackState)
-        {
-            if (!skill.clone.canAttack)
+        else if (Input.GetKeyDown(KeyCode.L) && stateMachine.currentState == primaryAttackState)    
+        {//这里是冲刺取消攻击并创造分身
+            if (!skill.clone.AttackConfirm)
             {
                 return;
             }
@@ -196,8 +205,6 @@ public class Player : Entity
             stateMachine.ChangeState(dashState);
         }
     }
-
-    
 
     #region Collision Checks
     public override bool IsWallDetected() => Physics2D.OverlapBox(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y),

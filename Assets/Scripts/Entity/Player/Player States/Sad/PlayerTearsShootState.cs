@@ -11,10 +11,12 @@ public class PlayerTearsShootState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        player.playerFx.StartTearsGenerate();
     }
 
     public override void Exit()
     {
+        
         base.Exit();
     }
 
@@ -23,11 +25,9 @@ public class PlayerTearsShootState : PlayerState
         base.Update();
         if (triggerCalled)
         {
-            float tempXInput = Input.GetAxis("Horizontal");
-            float tempYInput = Input.GetAxis("Vertical");
-            Vector2 tempInput = new Vector2(tempYInput, tempXInput);
-            SkillManager.instance.tears.CreateTears(tempInput);
+            player.playerFx.StopTearsGenerate();
             stateMachine.ChangeState(player.idleState);
+            return;
         }
     }
 }

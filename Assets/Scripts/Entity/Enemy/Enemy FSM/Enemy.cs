@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,10 +14,10 @@ public class Enemy : Entity
     protected bool canBeStunned;
     [SerializeField] protected GameObject counterImage;
 
-
     [Header("Move Info")]
     public float moveSpeed = 2f;
     public float idleTime = 1f;
+    private float defaultMoveSpeed;
 
     [Header("PlayerDetected Info")]
     [SerializeField] protected Transform playerCheck;
@@ -24,7 +25,8 @@ public class Enemy : Entity
     [SerializeField] protected float playerCheckWidth;
     public LayerMask whatIsPlayer;
 
-    
+    [Header("Enemy Tag")]
+    [SerializeField] private bool groundEnemy;    //判定是否为飞行/地面敌人
 
 
     public EnemyStateMachine stateMachine { get; private set; }
@@ -33,6 +35,7 @@ public class Enemy : Entity
     {
         base.Awake();
         stateMachine = new EnemyStateMachine();
+        defaultMoveSpeed = moveSpeed;
     }
 
     protected override void Start()
@@ -47,6 +50,85 @@ public class Enemy : Entity
         
     }
 
+    #region FreezeTime
+    public virtual void FreezeTime(bool _timeFrozen)
+    {
+        if (_timeFrozen)
+        {
+            moveSpeed = 0;
+            anim.speed = 0;
+        }
+        else
+        {
+            moveSpeed = defaultMoveSpeed;
+            anim.speed = 1;
+        }
+    }
+
+    public virtual void FreezeTimeAll(bool _timeFrozen)
+    {
+        if (_timeFrozen)
+        {
+            anim.speed = 0;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+        else
+        {
+            anim.speed = 1;
+            rb.constraints = RigidbodyConstraints2D.None;
+        }
+    }
+
+    protected virtual IEnumerator FreezeTimeFor(float _seconds)
+    {
+        FreezeTime(true);
+
+        yield return new WaitForSeconds(_seconds);
+
+        FreezeTime(false);
+    }
+    #endregion
+
+    #region PullGravity
+    public void PullGravity(Vector2 _pullPos, float _pullForce)
+    {
+        anim.speed = 0.3f;
+
+        if (Vector2.Distance(_pullPos, transform.position) < 0.1f)
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            return;
+        }
+
+        if (groundEnemy && IsGroundDetected())
+        {
+            if (Mathf.Abs(_pullPos.x - transform.position.x) < 0.1f)
+                return;
+
+            float dirX = Mathf.Sign(_pullPos.x - transform.position.x);
+            rb.AddForce(new Vector2(dirX * _pullForce, 0));
+        }
+        else
+        {
+            if (Mathf.Abs(_pullPos.y - transform.position.y) < 0.3f)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, 0);
+                rb.gravityScale = 0;
+            }
+            Vector2 dir = (_pullPos - (Vector2)transform.position).normalized;
+            rb.AddForce(dir * _pullForce);
+        }
+    }
+
+    public void StopPullGravity()
+    {
+        anim.speed = 1;
+        rb.gravityScale = gravity;
+        rb.constraints = RigidbodyConstraints2D.None;
+    }
+    #endregion
+
+    #region CounterAttackWindow
     public virtual void OpenCounterAttackWindow()
     {
         canBeStunned = true;
@@ -58,7 +140,7 @@ public class Enemy : Entity
         canBeStunned= false ;
         counterImage.SetActive(false);
     }
-
+    #endregion
 
     public virtual bool CanBeStunned()
     {

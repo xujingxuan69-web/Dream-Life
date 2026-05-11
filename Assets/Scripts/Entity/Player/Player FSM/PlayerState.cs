@@ -25,8 +25,6 @@ public class PlayerState
         this.player = _player;
         this.stateMachine = _stateMachine;
         this.animBoolName = _animBoolName;
-
-        
     }
 
     public virtual bool IsAttackState() => false;

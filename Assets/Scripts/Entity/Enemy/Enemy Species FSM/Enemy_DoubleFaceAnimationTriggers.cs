@@ -23,8 +23,10 @@ public class Enemy_DoubleFaceAnimationTriggers : MonoBehaviour
             {
                 hit.GetComponent<Player>().Damage(enemy.facingDir);
                 hasAttackPlayer = true;
+
+                
             }
-            if(hasAttackPlayer)
+            if (hasAttackPlayer)
             {
                 return;
             }

@@ -44,7 +44,8 @@ public class DoubleFaceBattleIdleState : EnemyState
         }
 
         if (Vector2.Distance(player.transform.position, enemy.transform.position) > enemy.attackDistance && !enemy.IsWallDetected() 
-            && Mathf.Abs(player.transform.position.x - enemy.transform.position.x) > 0.5f * enemy.attackDistance)
+            && Mathf.Abs(player.transform.position.x - enemy.transform.position.x) > 0.5f * enemy.attackDistance 
+            && enemy.IsGroundFrontDetected() && enemy.IsGroundDetected())
         {
             stateMachine.ChangeState(enemy.battleState);
         }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class Clone_Skill_Controller : MonoBehaviour
@@ -13,6 +14,8 @@ public class Clone_Skill_Controller : MonoBehaviour
 
     [SerializeField] private Transform attackCheck;
     [SerializeField] private float attackCheckRadius ;
+
+    private int facingDir;
 
     private void Awake()
     {
@@ -40,7 +43,7 @@ public class Clone_Skill_Controller : MonoBehaviour
     }
 
 
-    public void SetupClone(Transform _newTransform, float _cloneDuration, bool _canAttack, int _attackNumber)
+    public void SetupClone(Transform _newTransform, float _cloneDuration, int _attackNumber, int _facingDir, Vector3 _offset)
     {
         if (_attackNumber > 0)
         {
@@ -53,8 +56,14 @@ public class Clone_Skill_Controller : MonoBehaviour
         }
 
 
-        transform.position = _newTransform.position;
-        transform.rotation = _newTransform.rotation;
+        transform.position = _newTransform.position + _offset;
+
+        facingDir = _facingDir;
+
+        if (facingDir != 1)
+        {
+            transform.Rotate(0, 180, 0);
+        }
     }
 
 
@@ -66,7 +75,6 @@ public class Clone_Skill_Controller : MonoBehaviour
     private void AttackTrigger()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(attackCheck.position, attackCheckRadius);
-        int facingDir = transform.eulerAngles.y == 0 ? -1 : 1;
 
         foreach (var hit in colliders)
         {

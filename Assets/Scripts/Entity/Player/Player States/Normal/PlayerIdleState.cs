@@ -50,7 +50,7 @@ public class PlayerIdleState : PlayerGroundedState
             stateMachine.ChangeState(player.moveState);
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.LeftControl))
             stateMachine.ChangeState(player.squatEnterState);
 
         if (Input.GetKeyDown(KeyCode.Q) && player.counterAttackCooldownTimer < 0)

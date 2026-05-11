@@ -27,7 +27,7 @@ public class PlayerSquatEnterState : PlayerState
 
         player.SetVelocity(xInput * player.moveSpeed, rb.velocity.y);
 
-        if (Input.GetKeyUp(KeyCode.S) && stateTimer > 0.1f)
+        if (Input.GetKeyUp(KeyCode.LeftControl) && stateTimer > 0.1f)
         {
             if (player.IsGroundDetected())
                 stateMachine.ChangeState(player.idleState);

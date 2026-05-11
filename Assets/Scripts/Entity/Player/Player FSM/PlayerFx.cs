@@ -28,12 +28,15 @@ public class PlayerFx : MonoBehaviour
     public void StopTearsAttack()
     {
         animTears.SetBool("TearsAttack", false);
-        Debug.Log("success stopTearsAttack");
     }
 
-    public void HideTears()
+    public void StartTearsGenerate()
     {
-
+        animTears.SetBool("TearsGenerate", true);
     }
 
+    public void StopTearsGenerate()
+    {
+        animTears.SetBool("TearsGenerate", false);
+    }
 }
