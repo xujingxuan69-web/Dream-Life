@@ -21,8 +21,6 @@ public class PlayerShowState : PlayerState
     public override void Exit()
     {
         base.Exit();
-
-        PlayerManager.instance.canDash = true;
         player.ConstraintsFreeze(false);
         player.CollidersFreeze(false);
 

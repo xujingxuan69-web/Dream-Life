@@ -9,9 +9,7 @@ public class Clone_Skill : Skill
     [SerializeField] private GameObject clonePrefab;
     [SerializeField] private float cloneDuration;
     [Space]
-    [SerializeField] private bool canAttack;
-
-    [SerializeField] private bool createCloneOnDashStart;
+    [SerializeField] private bool createCloneOnDashStart;   //°üº¬³å´Ì²ÐÓ°¡¢²ÐÓ°¹¥»÷
     [SerializeField] private bool createCloneOnCounterAttack;
 
     public void CreateClone(Transform _clonePosition, int _facingDir, int _attackNumber = 0, Vector3 _offset = new Vector3())
@@ -21,22 +19,14 @@ public class Clone_Skill : Skill
         newClone.GetComponent<Clone_Skill_Controller>().SetupClone(_clonePosition, cloneDuration, _attackNumber, _facingDir, _offset);
     }
 
-    public bool AttackConfirm => canAttack;
+    public bool GetCloneOnDashStart() => createCloneOnDashStart;
 
-    public void CreateCloneOnDashStart()
+    public void CreateCloneOnDashStart(int _comboCounter = 0)
     {
         if (createCloneOnDashStart)
         {
-            if (PlayerManager.instance.attackDash)
-            {
-                CreateClone(player.transform, player.facingDir, PlayerManager.instance.comboCounter);
-            }
-            else
-            {
-                CreateClone(player.transform, player.facingDir);
-            }
+            CreateClone(player.transform, player.facingDir, _comboCounter);
         }
-        PlayerManager.instance.attackDash = false;
     }
 
     public void CreateCloneOnCounterAttack(Transform _enemyTransform, int _facingDir)

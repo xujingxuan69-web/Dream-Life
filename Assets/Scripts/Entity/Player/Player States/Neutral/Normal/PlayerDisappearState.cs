@@ -16,8 +16,6 @@ public class PlayerDisappearState : PlayerState
     public override void Enter()
     {
         base.Enter();
-
-        PlayerManager.instance.canDash = false;
         player.ConstraintsFreeze(true);
         player.CollidersFreeze(true);  
         //锁定角色，无法被攻击与移动

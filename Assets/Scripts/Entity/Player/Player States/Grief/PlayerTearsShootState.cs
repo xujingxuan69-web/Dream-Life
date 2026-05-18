@@ -16,16 +16,22 @@ public class PlayerTearsShootState : PlayerState
 
     public override void Exit()
     {
-        
         base.Exit();
+        player.playerFx.StopTearsGenerate();
     }
 
     public override void Update()
     {
         base.Update();
+
+        if (Input.GetKeyDown(KeyCode.L) && player.skill.dash.CanUseSkill())
+        {
+            stateMachine.ChangeState(player.dashState);
+            return;
+        }
+
         if (triggerCalled)
         {
-            player.playerFx.StopTearsGenerate();
             stateMachine.ChangeState(player.idleState);
             return;
         }

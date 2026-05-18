@@ -11,13 +11,14 @@ public class PlayerTearsAimState : PlayerState
     public override void Enter()
     {
         base.Enter();
-
         stateTimer = 0.5f;  
     }
 
     public override void Exit()
     {
         base.Exit();
+        player.skill.tears.DotsActive(false);
+
     }
 
     public override void Update()
@@ -42,9 +43,14 @@ public class PlayerTearsAimState : PlayerState
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.L) && player.skill.dash.CanUseSkill())
+        {
+            stateMachine.ChangeState(player.dashState);
+            return;
+        }
+
         if (Input.GetKeyUp(KeyCode.M))
         {
-            player.skill.tears.DotsActive(false);
             if (stateTimer > 0)
             {
                 stateMachine.ChangeState(player.tearsAttackState);

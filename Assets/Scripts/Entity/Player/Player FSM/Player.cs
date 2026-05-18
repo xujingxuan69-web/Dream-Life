@@ -6,10 +6,9 @@ using UnityEngine;
 
 public class Player : Entity
 {
-    #region SkillManager
+    #region Manager
+    public PlayerManager manager { get; private set; }
     public SkillManager skill { get; private set; }
-
-
     #endregion
     #region Inspector
     public bool isBusy { get; private set; }
@@ -21,19 +20,13 @@ public class Player : Entity
 
     [Header("Jump Info")]
     public float jumpForce = 12;
-    [HideInInspector] public bool jumpExtra;
     public float jumpDuration = 0.1f;
-    public float jumpTimer { get; private set; }
+    public float jumpAirTimer { get; private set; }    //土狼时间技术器
     public float wallJumpDuration = 0.5f;
 
     [Header("Dash Info")]
     public float dashSpeed;
-    public float dashDir {get; private set; }
     public float dashDuration;
-    [SerializeField] private float dashCoolDown;
-    private float dashCoolDownTimer;
-
-    [HideInInspector] public bool dashExtra;
 
     [Header("Attack Info")]
     public float comboWindow = 0.3f;
@@ -70,6 +63,9 @@ public class Player : Entity
 
     public PlayerDisappearState disappearState { get; private set; }
     public PlayerShowState showState { get; private set; }
+
+    public PlayerDeadState deadState { get; private set; }
+    public PlayerDeadAirState deadAirState { get; private set; }
     #endregion
     #region squatState
     public PlayerSquatEnterState squatEnterState { get; private set; }
@@ -85,7 +81,6 @@ public class Player : Entity
     public PlayerTearsAttackState tearsAttackState { get; private set; }
     #endregion
     #endregion
-
     #region playerFx
     public PlayerFx playerFx { get; private set; }
     #endregion
@@ -110,6 +105,9 @@ public class Player : Entity
         disappearState = new PlayerDisappearState(this, stateMachine, "Disappear");
         showState = new PlayerShowState(this, stateMachine, "Show");
 
+        deadState = new PlayerDeadState(this, stateMachine, "Die");
+        deadAirState = new PlayerDeadAirState(this, stateMachine, "Jump");
+
         squatEnterState = new PlayerSquatEnterState(this, stateMachine, "SquatEnter");
         squatIdleState = new PlayerSquatIdleState(this, stateMachine, "Squat");
         squatMoveState = new PlayerSquatMoveState(this, stateMachine, "Squat");
@@ -120,12 +118,15 @@ public class Player : Entity
         tearsAimState = new PlayerTearsAimState(this, stateMachine, "TearsAim");
         tearsShootState = new PlayerTearsShootState(this, stateMachine, "TearsShoot");
         tearsAttackState = new PlayerTearsAttackState(this, stateMachine, "TearsAttack");
+
+        
     }
 
     protected override void Start()
     {
         base.Start();
 
+        manager = PlayerManager.instance;
         skill = SkillManager.instance;
 
         stateMachine.Initialize(idleState);
@@ -135,27 +136,17 @@ public class Player : Entity
     {
         base.Update();
 
-        jumpTimer -= Time.deltaTime;
-        dashCoolDownTimer -= Time.deltaTime;
+        jumpAirTimer -= Time.deltaTime;
         counterAttackCooldownTimer -= Time.deltaTime;
 
         stateMachine.currentState.Update();
-
-        CheckForDashInput();
     }
 
-    
+    public void SetJumpAirTimer() => jumpAirTimer = jumpDuration;
 
-    public override void Damage(int attackerDirection)
-    {
-        base.Damage(attackerDirection);
-        Debug.Log("Player Damage");
-    }
+    public void SetCounterAttackTimer() => counterAttackCooldownTimer = counterAttackCoolDown;
 
-    public void SetJumpTimer()
-    {
-        jumpTimer = jumpDuration;
-    }
+    public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();
 
     public IEnumerator BusyFor(float _seconds)
     {
@@ -164,73 +155,38 @@ public class Player : Entity
         isBusy = false;
     }
 
-    public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();
-    public void SetCounterAttackTimer() => counterAttackCooldownTimer = counterAttackCoolDown;
-
-    private void CheckForDashInput()
-    {
-        if (stateMachine.currentState.IsAttackState() || (squatEnter && IsHeadDeatected()) || !PlayerManager.instance.canDash)
-            return;
-
-
-        if (Input.GetKeyDown(KeyCode.L) && stateMachine.currentState == wallSlideState)
-        {
-            dashExtra = false;
-            jumpExtra = true;
-            
-            dashDir = facingDir*-1;
-
-            stateMachine.ChangeState(dashState);
-        }
-        else if (Input.GetKeyDown(KeyCode.L) && stateMachine.currentState == primaryAttackState)    
-        {//这里是冲刺取消攻击并创造分身
-            if (!skill.clone.AttackConfirm)
-            {
-                return;
-            }
-            else if (skill.dash.CanUseSkill())
-            {
-                dashExtra = false;
-
-                dashDir = Input.GetAxisRaw("Horizontal") == 0 ? facingDir : Input.GetAxisRaw("Horizontal");
-
-                PlayerManager.instance.attackDash = true;
-                stateMachine.ChangeState(dashState);
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.L) && skill.dash.CanUseSkill() && (IsGroundDetected() || dashExtra))
-        {
-            dashExtra = false;
-
-            dashDir = Input.GetAxisRaw("Horizontal") == 0 ? facingDir : Input.GetAxisRaw("Horizontal");
-
-            stateMachine.ChangeState(dashState);
-        }
-    }
-
     #region Collision Checks
-    public override bool IsWallDetected() => Physics2D.OverlapBox(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y),
-            new Vector3(wallCheckDistance, wallCheckWidth * 0.6f), 0, whatIsGround)
-        && Physics2D.OverlapBox(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y + wallCheckWidth * 0.35f),
-            new Vector3(wallCheckDistance, wallCheckWidth * 0.1f), 0, whatIsGround)
-        && Physics2D.OverlapBox(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y - wallCheckWidth * 0.35f),
-            new Vector3(wallCheckDistance, wallCheckWidth * 0.1f), 0, whatIsGround);
+    public bool IsWallSlideDetected() => Physics2D.OverlapBox(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y),
+            new Vector3(wallCheckDistance, wallCheckWidth * 0.7f), 0, whatIsGround)
+        && Physics2D.OverlapBox(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y + wallCheckWidth * 0.425f),
+            new Vector3(wallCheckDistance, wallCheckWidth * 0.15f), 0, whatIsGround)
+        && Physics2D.OverlapBox(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y - wallCheckWidth * 0.425f),
+            new Vector3(wallCheckDistance, wallCheckWidth * 0.15f), 0, whatIsGround);
 
-    public virtual bool IsHeadDeatected() => Physics2D.OverlapBox(new Vector3(headCheck.position.x, headCheck.position.y + headCheckDistance * 0.5f),
+    public bool IsHeadDetected() => Physics2D.OverlapBox(new Vector3(headCheck.position.x, headCheck.position.y + headCheckDistance * 0.5f),
             new Vector3(headCheckWidth, headCheckDistance), 0, whatIsGround);
 
     public override void OnDrawGizmosWallCheck()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y),
-            new Vector3(wallCheckDistance, wallCheckWidth * 0.6f));
-        Gizmos.DrawWireCube(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y + wallCheckWidth * 0.35f),
-            new Vector3(wallCheckDistance, wallCheckWidth * 0.1f));
-        Gizmos.DrawWireCube(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y - wallCheckWidth * 0.35f),
-            new Vector3(wallCheckDistance, wallCheckWidth * 0.1f));
+            new Vector3(wallCheckDistance, wallCheckWidth * 0.7f));
+        Gizmos.DrawWireCube(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y + wallCheckWidth * 0.425f),
+            new Vector3(wallCheckDistance, wallCheckWidth * 0.15f));
+        Gizmos.DrawWireCube(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y - wallCheckWidth * 0.425f),
+            new Vector3(wallCheckDistance, wallCheckWidth * 0.15f));
 
         Gizmos.DrawWireCube(new Vector3(headCheck.position.x, headCheck.position.y + wallCheckDistance * 0.5f),
             new Vector3(headCheckWidth, headCheckDistance));
     }
     #endregion
+
+    public override void Die()
+    {
+        base.Die();
+
+        stateMachine.ChangeState(deadState);
+    }
+
+    
 }

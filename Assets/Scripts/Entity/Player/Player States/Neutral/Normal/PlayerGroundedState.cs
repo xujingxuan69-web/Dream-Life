@@ -11,14 +11,15 @@ public class PlayerGroundedState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        
         player.SetZeroVelocity();
+
+        player.manager.jumpExtra = false;
+        player.manager.dashExtra = false;
     }
 
     public override void Exit()
     {
         base.Exit();
-        player.jumpExtra = false;
         player.SetZeroVelocity();
     }
 
@@ -26,21 +27,29 @@ public class PlayerGroundedState : PlayerState
     {
         base.Update();
 
-        
+        player.SetJumpAirTimer();
 
-        if (!player.isBusy)
+        if (!player.isBusy) //攻击结束后摇
         {
-            if (Input.GetButtonDown("Jump"))
+            if (Input.GetButtonDown("Jump") && player.jumpAirTimer > 0)
             {
+                player.manager.dashExtra = true;
                 stateMachine.ChangeState(player.jumpState);
                 return;
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.L) && player.skill.dash.CanUseSkill()) //冲刺取消后摇
+        {
+            player.skill.clone.CreateCloneOnDashStart();
+            stateMachine.ChangeState(player.dashState);
+            return;
+        }
+
         if (!player.IsGroundDetected())
         {
-            player.dashExtra = true;
-            player.SetJumpTimer();
+            player.manager.dashExtra = true;
+            player.SetJumpAirTimer();
             stateMachine.ChangeState(player.airState);
         }
     }

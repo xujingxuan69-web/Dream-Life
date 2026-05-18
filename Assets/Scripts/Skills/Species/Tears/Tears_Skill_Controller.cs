@@ -82,8 +82,10 @@ public class Tears_Skill_Controller : MonoBehaviour
                 transform.localScale = new Vector2(tearsScale, tearsScale);
         }
 
-        BounceLogic();
+        float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle); //移动时的旋转
 
+        BounceLogic();
     }
 
     private void BounceLogic()
@@ -134,8 +136,9 @@ public class Tears_Skill_Controller : MonoBehaviour
 
                 foreach (var hit in colliders)
                 {
-                    if (hit.GetComponent<Enemy>() != null && hit.GetComponent<Enemy>() != curEnemy)
-                        enemyTarget.Add(hit.GetComponent<Enemy>());
+                    Enemy enemy = hit.GetComponent<Enemy>();
+                    if (enemy != null && enemy != curEnemy)
+                        enemyTarget.Add(enemy);
                 }
                 if (enemyTarget.Count != 0)
                     enemyTarget.Add(curEnemy);
@@ -161,7 +164,7 @@ public class Tears_Skill_Controller : MonoBehaviour
 
     private void TearsSkillDamage(Enemy curEnemy)
     {
-        curEnemy.Damage((int)Mathf.Sign(rb.velocity.x));
+        curEnemy.DamageEffect((int)Mathf.Sign(rb.velocity.x));
         curEnemy.StartCoroutine("FreezeTimeFor", freezeTimeDuration);
     }
 

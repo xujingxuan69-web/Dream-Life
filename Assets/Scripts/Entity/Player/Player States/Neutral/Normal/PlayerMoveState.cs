@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerMoveState : PlayerGroundedState
@@ -27,29 +28,33 @@ public class PlayerMoveState : PlayerGroundedState
 
         player.SetVelocity(xInput * player.moveSpeed, rb.velocity.y);
 
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            stateMachine.ChangeState(player.primaryAttackState);
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            stateMachine.ChangeState(player.tearsAimState);
-            return;
-        }
-
-        if (xInput == 0)
-            stateMachine.ChangeState(player.idleState);
-
         if (Input.GetKeyDown(KeyCode.Q) && player.counterAttackCooldownTimer < 0)
         {
             stateMachine.ChangeState(player.counterAttackState);
             return;
         }
 
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            stateMachine.ChangeState(player.primaryAttackState);
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            stateMachine.ChangeState(player.tearsAimState);
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.N) && player.skill.blackhole.CanUseSkill())
         {
             stateMachine.ChangeState(player.disappearState);
+            return;
         }
+        //以上为idle和move共用
+
+        if (xInput == 0)
+            stateMachine.ChangeState(player.idleState);
+        
     }
 }

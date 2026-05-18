@@ -11,17 +11,14 @@ public class PlayerDashState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        player.playerFx.StopTearsAttack();
 
-        player.skill.clone.CreateCloneOnDashStart();
-            
         rb.gravityScale = 0;
-
         stateTimer = player.dashDuration;
 
-        player.jumpExtra = player.IsGroundDetected() || player.jumpExtra;
+        player.manager.dashExtra = false;
+        player.manager.jumpExtra = player.IsGroundDetected() || player.manager.jumpExtra;
 
-        player.normalCollider.enabled = true;
+        player.normalCollider.enabled = true;   //取消Squat状态的Collider限制
     }
 
     public override void Exit()
@@ -31,27 +28,25 @@ public class PlayerDashState : PlayerState
         rb.gravityScale = player.gravity;
 
         player.SetVelocity(0, 0);
-
-        player.dashExtra = false;
     }
 
     public override void Update()
     {
         base.Update();
 
-        if(!player.IsHeadDeatected() && !player.IsWallDetected())
+        if(!player.IsHeadDetected() && !player.IsWallDetected())
         {
-            player.SetVelocity(player.dashSpeed * player.dashDir, 0);
+            player.SetVelocity(player.dashSpeed * player.facingDir, 0);
         }
         
 
-        if(player.IsWallDetected() && !player.IsGroundDetected())
+        if(player.IsWallSlideDetected() && !player.IsGroundDetected())
         {
             stateMachine.ChangeState(player.wallSlideState);
             return;
         }
 
-        if (Input.GetButtonDown("Jump") && player.jumpExtra)
+        if (Input.GetButtonDown("Jump") && player.manager.jumpExtra)
         {
             stateMachine.ChangeState(player.jumpState);
         }

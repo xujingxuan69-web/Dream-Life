@@ -588,7 +588,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f32772c6b5a092d4b90ca75726870305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyDuration: 6
   bounceSpeed: 8
   bounceDistance: 5
 --- !u!1 &3066798527898349425
@@ -697,7 +696,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -399168825
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: -1796243732, guid: 7014c7ef3ce0a0049ad931032feda2b8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

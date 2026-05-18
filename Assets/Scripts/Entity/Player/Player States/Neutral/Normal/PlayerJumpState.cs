@@ -11,11 +11,11 @@ public class PlayerJumpState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        player.jumpExtra = false;
-        player.dashExtra = player.IsGroundDetected() || player.dashExtra;
-
-        rb.velocity = new Vector2(xInput * player.moveSpeed, player.jumpForce);
         stateTimer = 0.2f;
+        rb.velocity = new Vector2(xInput * player.moveSpeed, player.jumpForce);
+
+        player.manager.jumpExtra = false;
+        player.manager.dashExtra = player.IsGroundDetected() || player.manager.dashExtra;
     }
 
     public override void Exit()
@@ -29,7 +29,7 @@ public class PlayerJumpState : PlayerState
 
         player.SetVelocity(xInput * player.moveSpeed, rb.velocity.y);
 
-        if (player.IsWallDetected() && stateTimer < 0)
+        if (player.IsWallSlideDetected() && stateTimer < 0)
         {
             stateMachine.ChangeState(player.wallSlideState);
         }
@@ -37,6 +37,12 @@ public class PlayerJumpState : PlayerState
         if (rb.velocity.y <= 0)
         {
             stateMachine.ChangeState(player.airState);
+        }
+
+        #region  JumpState and AirState Share
+        if (Input.GetKeyDown(KeyCode.L) && player.manager.dashExtra && player.skill.dash.CanUseSkill())
+        {
+            stateMachine.ChangeState(player.dashState);
         }
 
         if (Input.GetKeyDown(KeyCode.LeftControl))
@@ -48,5 +54,6 @@ public class PlayerJumpState : PlayerState
         {
             stateMachine.ChangeState(player.disappearState);
         }
+        #endregion
     }
 }

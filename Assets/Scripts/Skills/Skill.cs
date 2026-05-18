@@ -26,13 +26,13 @@ public class Skill : MonoBehaviour
 
     public virtual bool CanUseSkill()
     {
-        Debug.Log("cooldown " + cooldownTimer);
         if (cooldownTimer < 0)
         {
             UseSkill();
             cooldownTimer = cooldown;
             return true;
         }
+        Debug.Log("cooldown " + cooldownTimer);
         return false;
     }
 

@@ -79,7 +79,7 @@ public class Clone_Skill_Controller : MonoBehaviour
         foreach (var hit in colliders)
         {
             if (hit.GetComponent<Enemy>() != null)
-                hit.GetComponent<Enemy>().Damage(facingDir);
+                hit.GetComponent<Enemy>().DamageEffect(facingDir);
         }
     }
 

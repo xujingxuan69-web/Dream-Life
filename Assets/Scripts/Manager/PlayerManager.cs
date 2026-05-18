@@ -7,11 +7,9 @@ public class PlayerManager : MonoBehaviour
     public static PlayerManager instance;
     public Player player;
 
-    #region State Judgement
-    public int comboCounter;
-    public bool attackDash;
-
-    public bool canDash = true;    //PlayerÖÐ·ÀÖ¹±»Dash´ò¶Ï×´Ì¬
+    #region Extra Judgement
+    public bool dashExtra;
+    public bool jumpExtra;
     #endregion
 
     private void Awake()

@@ -30,6 +30,7 @@ public class Enemy : Entity
 
 
     public EnemyStateMachine stateMachine { get; private set; }
+    public string lastAnimBoolName { get; private set; } 
 
     protected override void Awake()
     {
@@ -48,6 +49,11 @@ public class Enemy : Entity
         base.Update();
         stateMachine.currentState.Update();
         
+    }
+
+    public virtual void AssignLastAnimName(string _animBoolName)
+    {
+        lastAnimBoolName = _animBoolName;
     }
 
     #region FreezeTime
@@ -88,7 +94,6 @@ public class Enemy : Entity
         FreezeTime(false);
     }
     #endregion
-
     #region PullGravity
     public void PullGravity(Vector2 _pullPos, float _pullForce)
     {
@@ -130,7 +135,6 @@ public class Enemy : Entity
         ConstraintsFreeze(false);
     }
     #endregion
-
     #region CounterAttackWindow
     public virtual void OpenCounterAttackWindow()
     {
@@ -155,11 +159,6 @@ public class Enemy : Entity
         return false;
     }
 
-    public override void Damage(int attackerDirection)
-    {
-        base.Damage(attackerDirection);
-        Debug.Log("I Damage");
-    }
     public virtual void AnimationFinishTrigger() => stateMachine.currentState.AnimationFinishTrigger();
 
     #region Check
@@ -170,27 +169,18 @@ public class Enemy : Entity
         OnDrawGizmosPlayerBehindCheck();
     }
     #region Player Check
-    public virtual bool IsPlayerInSight() => Physics2D.OverlapBox(
-        new Vector2(playerCheck.position.x + facingDir * playerCheckDistance * 0.5f, playerCheck.position.y),
-        new Vector2(playerCheckDistance, playerCheckWidth), 0, whatIsPlayer);
-    public virtual bool IsPlayerBehindSight() => Physics2D.OverlapBox(
-        new Vector2(playerCheck.position.x - facingDir * playerCheckDistance * 0.5f, playerCheck.position.y),
-        new Vector2(playerCheckDistance, playerCheckWidth), 0, whatIsPlayer);
-    public virtual RaycastHit2D IsPlayerDetected() => Physics2D.Raycast(playerCheck.position, Vector2.right * facingDir, playerCheckDistance, whatIsPlayer | whatIsGround);
-    
+    public virtual RaycastHit2D IsPlayerFrontDetected() => Physics2D.Raycast(playerCheck.position, Vector2.right * facingDir, playerCheckDistance, whatIsPlayer | whatIsGround);
+    public virtual RaycastHit2D IsPlayerBehindDetected() => Physics2D.Raycast(playerCheck.position, Vector2.left * facingDir, playerCheckDistance * 0.2f, whatIsPlayer | whatIsGround);
 
     public virtual void OnDrawGizmosPlayerFrontCheck()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(new Vector2(playerCheck.position.x + facingDir * playerCheckDistance * 0.5f, playerCheck.position.y),
-            new Vector2(playerCheckDistance, playerCheckWidth));
         Gizmos.DrawLine(playerCheck.position, new Vector2(playerCheck.position.x + playerCheckDistance * facingDir, playerCheck.position.y));
     }
     public void OnDrawGizmosPlayerBehindCheck()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(new Vector2(playerCheck.position.x - facingDir * playerCheckDistance * 0.5f, playerCheck.position.y),
-            new Vector2(playerCheckDistance, playerCheckWidth));
+        Gizmos.DrawLine(playerCheck.position, new Vector2(playerCheck.position.x - playerCheckDistance * facingDir * 0.2f, playerCheck.position.y));
     }
     #endregion
     #region Collisions Check

@@ -16,7 +16,6 @@ public class DoubleFaceBattleState : EnemyState
     public override void Enter()
     {
         base.Enter();
-
         player = PlayerManager.instance.player.transform;
     }
 
@@ -29,10 +28,10 @@ public class DoubleFaceBattleState : EnemyState
     {
         base.Update();
 
-        if (enemy.IsPlayerHit)
+        if (enemy.IsPlayerFrontHit)
         {
             stateTimer = enemy.battleTime;
-            if (enemy.hit.distance < enemy.attackDistance && CanAttack())
+            if (enemy.hitFront.distance < enemy.attackDistance && CanAttack())
             {
                 stateMachine.ChangeState(enemy.attackState);
             }
@@ -47,7 +46,7 @@ public class DoubleFaceBattleState : EnemyState
         }
 
         if (enemy.IsWallDetected() || (!enemy.IsGroundFrontDetected() && enemy.IsGroundDetected()) 
-            || Mathf.Abs(player.transform.position.x - enemy.transform.position.x) < 0.5f * enemy.attackDistance)
+            || (Mathf.Abs(player.transform.position.x - enemy.transform.position.x) < 0.5f * enemy.attackDistance && (enemy.IsPlayerFrontHit || enemy.IsPlayerBehindHit)))
         {
             stateMachine.ChangeState(enemy.battleIdleState);
             return;

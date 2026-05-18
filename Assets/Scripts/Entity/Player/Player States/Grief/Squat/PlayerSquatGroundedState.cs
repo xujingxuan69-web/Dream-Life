@@ -11,7 +11,7 @@ public class PlayerSquatGroundedState : PlayerSquatState
     public override void Enter()
     {
         base.Enter();
-        player.dashExtra = true;
+        player.manager.dashExtra = true;
         player.tempMoveSpeed = player.moveSpeed * player.moveSpeedRate;
     }
 
@@ -32,7 +32,7 @@ public class PlayerSquatGroundedState : PlayerSquatState
 
         if (!player.IsGroundDetected())
         {
-            player.SetJumpTimer();
+            player.SetJumpAirTimer();
             stateMachine.ChangeState(player.squatAirState);
         }
     }

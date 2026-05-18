@@ -28,13 +28,12 @@ public class DoubleFaceBattleIdleState : EnemyState
     {
         base.Update();
 
-        if (enemy.IsPlayerHit)
+        if (enemy.IsPlayerFrontHit)
         {
-            if (enemy.hit.distance < enemy.attackDistance && CanAttack())
+            if (enemy.hitFront.distance < enemy.attackDistance && CanAttack())
             {
                 stateMachine.ChangeState(enemy.attackState);
             }
-
         }
 
         if (stateTimer < 0)
@@ -43,9 +42,9 @@ public class DoubleFaceBattleIdleState : EnemyState
             return;
         }
 
-        if (Vector2.Distance(player.transform.position, enemy.transform.position) > enemy.attackDistance && !enemy.IsWallDetected() 
-            && Mathf.Abs(player.transform.position.x - enemy.transform.position.x) > 0.5f * enemy.attackDistance 
-            && enemy.IsGroundFrontDetected() && enemy.IsGroundDetected())
+        if (Vector2.Distance(player.transform.position, enemy.transform.position) > enemy.attackDistance  
+            && Mathf.Abs(player.transform.position.x - enemy.transform.position.x) > 0.5f * enemy.attackDistance
+            && enemy.IsGroundFrontDetected() && enemy.IsGroundDetected() && !enemy.IsWallDetected())
         {
             stateMachine.ChangeState(enemy.battleState);
         }
@@ -63,7 +62,6 @@ public class DoubleFaceBattleIdleState : EnemyState
         {
             enemy.Flip();
         }
-    
     }
 
     private bool CanAttack()

@@ -16,8 +16,9 @@ public class Entity : MonoBehaviour
 
     [Header("Knockback Info")]
     [SerializeField] protected Vector2 knockbackDirection;
-    public bool isKnocked;
     [SerializeField] protected float knockbackDuration;
+    public bool isKnocked { get; private set; }
+    public bool isInvincible { get; private set; }
 
     [Header("Collision Info")]
     public Transform attackCheck;
@@ -35,7 +36,9 @@ public class Entity : MonoBehaviour
     public Animator anim { get; private set; }
     public Rigidbody2D rb { get; private set; }
     public SpriteRenderer[] sr { get; private set; }
+    public CapsuleCollider2D cd { get; private set; }
     public Collider2D[] colliders { get; private set; }
+    
     public CharacterStats stats { get; private set; }
     #endregion
 
@@ -47,6 +50,7 @@ public class Entity : MonoBehaviour
     {
         fx = GetComponent<EntityFx>();
         rb = GetComponent<Rigidbody2D>();
+        cd = GetComponent<CapsuleCollider2D>();
         colliders = GetComponents<Collider2D>();
         anim = GetComponentInChildren<Animator>();
         sr = GetComponentsInChildren<SpriteRenderer>();
@@ -54,6 +58,7 @@ public class Entity : MonoBehaviour
 
         rb.gravityScale = gravity;
         originalConstraints = rb.constraints;
+        isInvincible = false;
     }
 
     protected virtual void Update()
@@ -61,7 +66,7 @@ public class Entity : MonoBehaviour
 
     }
 
-    public virtual void Damage(int attackerDirection)
+    public virtual void DamageEffect(int attackerDirection)
     {
         fx.StartCoroutine("FlashFx");
         StartCoroutine(HitKnockback(attackerDirection));
@@ -71,7 +76,8 @@ public class Entity : MonoBehaviour
     {
         isKnocked = true;
 
-        rb.velocity = new Vector2(knockbackDirection.x * attackerDirection, knockbackDirection.y + rb.velocity.y * 0.5f);
+        if (attackerDirection != 0)
+            rb.velocity = new Vector2(knockbackDirection.x * attackerDirection, knockbackDirection.y + rb.velocity.y * 0.5f);
 
         yield return new WaitForSeconds(knockbackDuration);
 
@@ -174,5 +180,12 @@ public class Entity : MonoBehaviour
             for (int i = 0; i < sr.Length; i++)
                 sr[i].color = Color.white;
         }
+    }
+
+    public void SetInvincible(bool _isInvincible) => isInvincible = _isInvincible;
+
+    public virtual void Die()
+    {
+
     }
 }

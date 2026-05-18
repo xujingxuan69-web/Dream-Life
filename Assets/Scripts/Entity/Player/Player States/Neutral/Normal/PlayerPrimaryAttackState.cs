@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerPrimaryAttackState : PlayerState
@@ -36,9 +37,6 @@ public class PlayerPrimaryAttackState : PlayerState
 
         stateTimer = 1f;
         attackInput = false;
-
-
-        PlayerManager.instance.comboCounter = comboCounter + 1;
     }
 
     public override void Exit()
@@ -65,6 +63,16 @@ public class PlayerPrimaryAttackState : PlayerState
             attackInputTimer = Time.time;
         }
 
+        if (Input.GetKeyDown(KeyCode.L) && player.skill.dash.CanUseSkill())
+        {//这里是冲刺取消攻击并创造分身
+            player.skill.clone.CreateCloneOnDashStart(comboCounter + 1);
+            if (Input.GetAxisRaw("Horizontal") == -player.facingDir)
+            {
+                player.Flip();
+            }
+            stateMachine.ChangeState(player.dashState);
+        }
+
         if (triggerCalled)
         {
             if(attackInput && Time.time < attackInputTimer + attackInputBuffer && player.IsGroundDetected())
@@ -77,8 +85,8 @@ public class PlayerPrimaryAttackState : PlayerState
             }
             else
             {
-                player.jumpExtra = true;
-                player.dashExtra = true;
+                player.manager.jumpExtra = true;
+                player.manager.dashExtra = true;
                 stateMachine.ChangeState(player.airState);
             }
         }

@@ -31,12 +31,9 @@ public class DoubleFaceGroundedState : EnemyState
     {
         base.Update();
         
-        if (enemy.IsGroundDetected() && enemy.IsGroundFrontDetected() && !enemy.IsWallDetected())
+        if (enemy.IsGroundDetected() && enemy.IsGroundFrontDetected() && !enemy.IsWallDetected() && (enemy.IsPlayerFrontHit || enemy.IsPlayerBehindHit))
         {
-            if (enemy.IsPlayerHit || Vector2.Distance(enemy.transform.position, player.position) < enemy.attackDistance && !enemy.IsWallDetected())
-            {
-                stateMachine.ChangeState(enemy.battleState);
-            }
+            stateMachine.ChangeState(enemy.battleState);
         }
 
     }

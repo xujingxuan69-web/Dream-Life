@@ -12,7 +12,6 @@ public class PlayerIdleState : PlayerGroundedState
     public override void Enter()
     {
         base.Enter();
-        
     }
 
     public override void Exit()
@@ -33,6 +32,23 @@ public class PlayerIdleState : PlayerGroundedState
             }
         }
 
+        if (xInput != 0 && !player.isBusy)
+        {
+            stateMachine.ChangeState(player.moveState);
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            stateMachine.ChangeState(player.squatEnterState);
+        }
+
+        #region Idle&Move Share
+        if (Input.GetKeyDown(KeyCode.Q) && player.counterAttackCooldownTimer < 0)
+        {
+            stateMachine.ChangeState(player.counterAttackState);
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.J))
         {
             stateMachine.ChangeState(player.primaryAttackState);
@@ -45,22 +61,11 @@ public class PlayerIdleState : PlayerGroundedState
             return;
         }
 
-        if (xInput != 0 && !player.isBusy)
-        {
-            stateMachine.ChangeState(player.moveState);
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftControl))
-            stateMachine.ChangeState(player.squatEnterState);
-
-        if (Input.GetKeyDown(KeyCode.Q) && player.counterAttackCooldownTimer < 0)
-        {
-            stateMachine.ChangeState(player.counterAttackState);
-        }
-
         if (Input.GetKeyDown(KeyCode.N) && player.skill.blackhole.CanUseSkill())
         {
             stateMachine.ChangeState(player.disappearState);
+            return;
         }
+        #endregion
     }
 }

@@ -19,6 +19,7 @@ public class PlayerWallJumpState : PlayerState
     public override void Exit()
     {
         base.Exit();
+        player.manager.jumpExtra = false;
     }
 
     public override void Update()
@@ -30,7 +31,14 @@ public class PlayerWallJumpState : PlayerState
             stateMachine.ChangeState(player.airState);
         }
 
-        if(player.IsWallDetected())
+        if (Input.GetKeyDown(KeyCode.L) && player.manager.dashExtra && player.skill.dash.CanUseSkill())
+        {
+            player.skill.dash.UseSkill();
+            stateMachine.ChangeState(player.dashState);
+            return;
+        }
+
+        if (player.IsWallSlideDetected())
         {
             stateMachine.ChangeState(player.wallSlideState);
         }
