@@ -23,8 +23,6 @@ public class PlayerStats : CharacterStats
     public override void TakeDamage(int _damage, int _damageDir)
     {
         base.TakeDamage(_damage, _damageDir);
-
-        player.DamageEffect(_damageDir);
     }
 
     protected override void Die()

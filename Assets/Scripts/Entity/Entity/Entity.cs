@@ -40,6 +40,8 @@ public class Entity : MonoBehaviour
     public Collider2D[] colliders { get; private set; }
     
     public CharacterStats stats { get; private set; }
+
+    public System.Action onFlipped;
     #endregion
 
     protected virtual void Awake()
@@ -56,9 +58,9 @@ public class Entity : MonoBehaviour
         sr = GetComponentsInChildren<SpriteRenderer>();
         stats = GetComponent<CharacterStats>();
 
+        isInvincible = false;
         rb.gravityScale = gravity;
         originalConstraints = rb.constraints;
-        isInvincible = false;
     }
 
     protected virtual void Update()
@@ -66,18 +68,27 @@ public class Entity : MonoBehaviour
 
     }
 
-    public virtual void DamageEffect(int attackerDirection)
+    public virtual void SpeedSlowBy(float _slowPercentage)
     {
-        fx.StartCoroutine("FlashFx");
-        StartCoroutine(HitKnockback(attackerDirection));
+        anim.speed = 1 - _slowPercentage;
+    }
+
+    public virtual void SpeedReturnDefault()
+    {
+        anim.speed = 1;
+    }
+
+    public virtual void DamageImpact(int attackerDirection)
+    {
+        if (attackerDirection != 0)
+            StartCoroutine(HitKnockback(attackerDirection));
     }
 
     protected virtual IEnumerator HitKnockback(int attackerDirection)
     {
         isKnocked = true;
 
-        if (attackerDirection != 0)
-            rb.velocity = new Vector2(knockbackDirection.x * attackerDirection, knockbackDirection.y + rb.velocity.y * 0.5f);
+        rb.velocity = new Vector2(knockbackDirection.x * attackerDirection, knockbackDirection.y + rb.velocity.y * 0.5f);
 
         yield return new WaitForSeconds(knockbackDuration);
 
@@ -123,6 +134,9 @@ public class Entity : MonoBehaviour
         facingDir *= -1;
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
+
+        if (onFlipped != null)  //无头顶血条UI显示脚本 HealthBar_UI.cs
+            onFlipped();
     }
 
     public virtual void FlipController(float _x)
@@ -168,24 +182,15 @@ public class Entity : MonoBehaviour
     }
     #endregion
 
-    public void MakeTransparent(bool _Transparent)  //瞬间隐形
-    {
-        if (_Transparent)
-        {
-            for (int i =0; i < sr.Length; i++)  //for的性能略优于foreach，所以在此使用
-                sr[i].color = Color.clear;
-        }
-        else
-        {
-            for (int i = 0; i < sr.Length; i++)
-                sr[i].color = Color.white;
-        }
-    }
-
     public void SetInvincible(bool _isInvincible) => isInvincible = _isInvincible;
 
     public virtual void Die()
     {
 
+    }
+
+    protected void OnDestroy()
+    {
+        CancelInvoke();
     }
 }

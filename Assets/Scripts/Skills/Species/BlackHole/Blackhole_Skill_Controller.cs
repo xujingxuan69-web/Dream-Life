@@ -117,6 +117,8 @@ public class Blackhole_Skill_Controller : MonoBehaviour
 
             Enemy enemy = targets[Random.Range(0, targets.Count)];
 
+            enemy.StartCoroutine(enemy.stats.AddTempModifier(enemy.stats.vulnerable, 1, 3f));   //!暂时添加易伤效果进行Demo演示
+
             SkillManager.instance.clone.CreateClone(enemy.transform, randDir, randAttackCount, randDir * Vector2.left * 1f);
 
             attacksAmount--;
@@ -187,4 +189,9 @@ public class Blackhole_Skill_Controller : MonoBehaviour
         Invoke("AttackTrigger", 1f);
     }
     #endregion
+
+    private void OnDestroy()    //防止已挂载的Invoke报错
+    {
+        CancelInvoke();
+    }
 }

@@ -22,7 +22,7 @@ public class PlayerSquatMoveState : PlayerSquatGroundedState
     {
         base.Update();
 
-        player.SetVelocity(xInput * player.tempMoveSpeed, rb.velocity.y);
+        player.SetVelocity(xInput * player.squatMoveSpeed, rb.velocity.y);
 
         if (xInput == 0)
             stateMachine.ChangeState(player.squatIdleState);

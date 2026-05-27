@@ -10,15 +10,12 @@ public class TearsAttackAnimationTrigger : FxAnimationTrigger
     private List<Enemy> hitEnemies;
     private int attackDir;
 
-    /*private CharacterStats stats;*/
-    //先用player的数值往下做
-
     protected override void Start()
     {
         base.Start();
 
         cd = GetComponent<Collider2D>();
-        /*stats = GetComponent<CharacterStats>();*/
+
         if (cd != null)
         {
             cd.enabled = false;
@@ -54,9 +51,8 @@ public class TearsAttackAnimationTrigger : FxAnimationTrigger
         EnemyStats stats = collision.GetComponent<EnemyStats>();
         if (enemy != null && !hitEnemies.Contains(enemy))
         {
+            player.stats.DoDamage(enemy.GetComponent<CharacterStats>() , attackDir, 1, 1, FormType.Grief);    //!泪滴攻击伤害系数
             hitEnemies.Add(enemy);
-            //enemy.DamageEffect(attackDir);
-            //collision.GetComponent<CharacterStats>().TakeDamage();
         }
     }
 }

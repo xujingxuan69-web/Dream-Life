@@ -11,7 +11,7 @@ public class PlayerSquatJumpState : PlayerSquatState
     public override void Enter()
     {
         base.Enter();
-        rb.velocity = new Vector2(xInput * player.tempMoveSpeed, player.jumpForce);
+        rb.velocity = new Vector2(xInput * player.squatMoveSpeed, player.jumpForce);
     }
 
     public override void Exit()
@@ -23,7 +23,7 @@ public class PlayerSquatJumpState : PlayerSquatState
     {
         base.Update();
 
-        player.SetVelocity(xInput * player.tempMoveSpeed, rb.velocity.y);
+        player.SetVelocity(xInput * player.squatMoveSpeed, rb.velocity.y);
 
         if (rb.velocity.y <= 0)
         {

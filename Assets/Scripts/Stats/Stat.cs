@@ -7,8 +7,9 @@ public class Stat
 {
     [SerializeField] private int baseValue;
 
-
     public List<int> modifiers = new List<int>();
+
+    public System.Action onValueChanged;
 
     public int GetValue()       //加算
     {
@@ -27,7 +28,6 @@ public class Stat
 
     public float GetMultiValue()   //乘算
     {
-
         float finalValue = 1;
         if (modifiers == null)
             return finalValue;
@@ -43,22 +43,18 @@ public class Stat
     public void SetDefaultValue(int _value)
     {
         baseValue = _value;
+        onValueChanged?.Invoke();
     }
 
     public void AddModifier(int _modifier)
     {
         modifiers.Add(_modifier);
+        onValueChanged?.Invoke();   //.Invoke() 触发委托的所有订阅
     }
 
     public void RemoveModifier(int _modifier)
     {
         modifiers.Remove(_modifier);
-    }
-
-    public IEnumerable AddModifierTemp(int _modifier, float _seconds)
-    {
-        modifiers.Add(_modifier);
-        yield return new WaitForSeconds(_seconds);
-        modifiers.Remove(_modifier);
+        onValueChanged?.Invoke();
     }
 }

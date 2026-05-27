@@ -12,7 +12,7 @@ public class PlayerSquatGroundedState : PlayerSquatState
     {
         base.Enter();
         player.manager.dashExtra = true;
-        player.tempMoveSpeed = player.moveSpeed * player.moveSpeedRate;
+        player.squatMoveSpeed = player.moveSpeed * player.squatMoveSpeedRate;
     }
 
     public override void Exit()

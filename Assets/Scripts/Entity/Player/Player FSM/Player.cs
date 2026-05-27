@@ -14,8 +14,8 @@ public class Player : Entity
     public bool isBusy { get; private set; }
     [Header("Move Info")]
     public float moveSpeed = 5;
-    public float moveSpeedRate = 1.5f;
-    [HideInInspector]public float tempMoveSpeed = 5;
+    public float squatMoveSpeedRate = 1.5f;
+    private float defaultMoveSpeed;
     
 
     [Header("Jump Info")]
@@ -23,10 +23,12 @@ public class Player : Entity
     public float jumpDuration = 0.1f;
     public float jumpAirTimer { get; private set; }    //土狼时间技术器
     public float wallJumpDuration = 0.5f;
+    private float defaultJumpForce;
 
     [Header("Dash Info")]
     public float dashSpeed;
     public float dashDuration;
+    private float defaultDashSpeed;
 
     [Header("Attack Info")]
     public float comboWindow = 0.3f;
@@ -43,6 +45,7 @@ public class Player : Entity
     [SerializeField] protected float headCheckDistance;
     [SerializeField] protected float headCheckWidth;
     [HideInInspector] public bool squatEnter;
+    [HideInInspector] public float squatMoveSpeed;
     #endregion
     #region States
     public PlayerStateMachine stateMachine { get; private set; }
@@ -130,6 +133,10 @@ public class Player : Entity
         skill = SkillManager.instance;
 
         stateMachine.Initialize(idleState);
+
+        defaultMoveSpeed = moveSpeed;
+        defaultJumpForce = jumpForce;
+        defaultDashSpeed = dashSpeed;
     }
 
     protected override void Update()
@@ -186,6 +193,24 @@ public class Player : Entity
         base.Die();
 
         stateMachine.ChangeState(deadState);
+    }
+
+    public override void SpeedSlowBy(float _slowPercentage)
+    {
+        base.SpeedSlowBy(_slowPercentage);
+
+        moveSpeed = defaultMoveSpeed * (1 - _slowPercentage);
+        jumpForce = defaultJumpForce * (1 - _slowPercentage);
+        dashSpeed = defaultDashSpeed * (1 - _slowPercentage);
+    }
+
+    public override void SpeedReturnDefault()
+    {
+        base.SpeedReturnDefault();
+
+        moveSpeed = defaultMoveSpeed;
+        jumpForce = defaultJumpForce;
+        dashSpeed = defaultDashSpeed;
     }
 
     

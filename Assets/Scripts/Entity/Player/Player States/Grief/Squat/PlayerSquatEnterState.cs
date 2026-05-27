@@ -13,7 +13,6 @@ public class PlayerSquatEnterState : PlayerState
     {
         base.Enter();
         stateTimer = 0.3f;
-        player.tempMoveSpeed = player.moveSpeed; 
     }
 
     public override void Exit()
@@ -46,7 +45,7 @@ public class PlayerSquatEnterState : PlayerState
             }
             else
             {
-                player.tempMoveSpeed = player.moveSpeed * player.moveSpeedRate;
+                player.squatMoveSpeed = player.moveSpeed * player.squatMoveSpeedRate;
                 stateMachine.ChangeState(player.squatIdleState);
             }
         }

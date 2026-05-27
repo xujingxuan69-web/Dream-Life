@@ -8,12 +8,11 @@ public class FxAnimationTrigger : MonoBehaviour
 
     protected virtual void Start()
     {
-        player = PlayerManager.instance.player;
     }
 
     protected virtual void AnimationTriggerStart()
     {
-        
+        player = PlayerManager.instance.player; //!不得已使用
     }
 
     protected virtual void AnimationTriggerStop()

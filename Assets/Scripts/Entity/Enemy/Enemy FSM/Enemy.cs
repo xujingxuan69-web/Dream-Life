@@ -51,36 +51,41 @@ public class Enemy : Entity
         
     }
 
-    public virtual void AssignLastAnimName(string _animBoolName)
+    public virtual void AssignLastAnimName(string _animBoolName) => lastAnimBoolName = _animBoolName;
+
+    public override void SpeedSlowBy(float _slowPercentage)
     {
-        lastAnimBoolName = _animBoolName;
+        base.SpeedSlowBy(_slowPercentage);
+
+        moveSpeed = defaultMoveSpeed * (1-_slowPercentage);
+    }
+
+    public override void SpeedReturnDefault()
+    {
+        base.SpeedReturnDefault();
+
+        moveSpeed = defaultMoveSpeed;
     }
 
     #region FreezeTime
     public virtual void FreezeTime(bool _timeFrozen)
     {
         if (_timeFrozen)
-        {
-            moveSpeed = 0;
-            anim.speed = 0;
-        }
+            SpeedSlowBy(1);
         else
-        {
-            moveSpeed = defaultMoveSpeed;
-            anim.speed = 1;
-        }
+            SpeedReturnDefault();
     }
 
     public virtual void FreezeTimeAll(bool _timeFrozen)
     {
         if (_timeFrozen)
         {
-            anim.speed = 0;
+            SpeedSlowBy(1);
             ConstraintsFreeze(true);
         }
         else
         {
-            anim.speed = 1;
+            SpeedReturnDefault();
             ConstraintsFreeze(false);
         }
     }
@@ -97,7 +102,7 @@ public class Enemy : Entity
     #region PullGravity
     public void PullGravity(Vector2 _pullPos, float _pullForce)
     {
-        anim.speed = 0.3f;
+        SpeedSlowBy(0.7f);
 
         if (Vector2.Distance(_pullPos, transform.position) < 0.1f)
         {
@@ -130,7 +135,7 @@ public class Enemy : Entity
 
     public void StopPullGravity()
     {
-        anim.speed = 1;
+        SpeedReturnDefault();
         rb.gravityScale = gravity;
         ConstraintsFreeze(false);
     }

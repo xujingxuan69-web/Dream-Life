@@ -20,8 +20,6 @@ public class EntityFx : MonoBehaviour
     private GameObject currentVortex;
 
 
-    
-
     private void Start()
     {
         entityCollider = GetComponent<Collider2D>();
@@ -32,6 +30,19 @@ public class EntityFx : MonoBehaviour
         }
     }
 
+    public void MakeTransparent(bool _Transparent)  //!瞬间隐形，未使用
+    {
+        if (_Transparent)
+        {
+            for (int i = 0; i < allSR.Count; i++)  //for的性能略优于foreach，所以在此使用
+                allSR[i].color = Color.clear;
+        }
+        else
+        {
+            for (int i = 0; i < allSR.Count; i++)
+                allSR[i].color = Color.white;
+        }
+    }
 
     private IEnumerator FlashFx()
     {
@@ -72,5 +83,10 @@ public class EntityFx : MonoBehaviour
         }
 
         
+    }
+
+    private void OnDestroy()
+    {
+        CancelInvoke();
     }
 }

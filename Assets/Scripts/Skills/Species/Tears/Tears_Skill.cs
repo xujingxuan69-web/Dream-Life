@@ -100,7 +100,7 @@ public class Tears_Skill : Skill
         {
             newTearsScript.SetupPierce(true, pierceAmount);
         }
-        newTearsScript.SetupTears(finalDir, tearsGravity, gravityTime, tearsScale, tearsScaleSpeed, freezeTimeDuration, tearsDestroyDuration);
+        newTearsScript.SetupTears(finalDir, tearsGravity, gravityTime, tearsScale, tearsScaleSpeed, freezeTimeDuration, tearsDestroyDuration, player);
     }
 
     #region AimRegion

@@ -24,7 +24,6 @@ public class PlayerSquatExitState : PlayerState
     public override void Exit()
     {
         base.Exit();
-        player.tempMoveSpeed = player.moveSpeed;
         player.squatEnter = false;
     }
 
@@ -34,7 +33,7 @@ public class PlayerSquatExitState : PlayerState
 
         if (!player.IsGroundDetected())
         {
-            player.SetVelocity(xInput * player.tempMoveSpeed, rb.velocity.y);
+            player.SetVelocity(xInput * player.squatMoveSpeed, rb.velocity.y);
         }
         else if (rb.velocity.x != 0 && !player.isKnocked)
         {

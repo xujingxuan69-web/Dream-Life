@@ -41,8 +41,9 @@ public class Tears_Skill_Controller : MonoBehaviour
     }
 
     public void SetupTears(Vector2 _dir, float _gravityScale,float _gravityTime, float _tearsScale, 
-        float _tearsScaleSpeed, float _freezeTimeDuration, float _destroyDuration)
+        float _tearsScaleSpeed, float _freezeTimeDuration, float _destroyDuration, Player _player)
     {
+        player = _player;
         gravityScale = _gravityScale;
         rb.gravityScale = 0;
         rb.velocity = _dir;
@@ -164,7 +165,8 @@ public class Tears_Skill_Controller : MonoBehaviour
 
     private void TearsSkillDamage(Enemy curEnemy)
     {
-        curEnemy.DamageEffect((int)Mathf.Sign(rb.velocity.x));
+        curEnemy.StartCoroutine(curEnemy.stats.AddTempModifier(curEnemy.stats.weak, 2, 5f));    //!添加虚弱效果进行Demo演示
+        player.stats.DoDamage(curEnemy.stats, (int)Mathf.Sign(rb.velocity.x), 1, 1, FormType.Grief);    //!泪滴的伤害系数需要修改
         curEnemy.StartCoroutine("FreezeTimeFor", freezeTimeDuration);
     }
 
@@ -176,5 +178,10 @@ public class Tears_Skill_Controller : MonoBehaviour
     private void TearsDestroy()
     {
         Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        CancelInvoke();
     }
 }
