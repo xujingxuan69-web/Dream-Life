@@ -66,7 +66,7 @@ public class DoubleFaceBattleIdleState : EnemyState
 
     private bool CanAttack()
     {
-        if (Time.time >= enemy.lastTimeAttacked + enemy.attackCooldown)
+        if (Time.time >= enemy.lastTimeAttack + enemy.attackCooldown)
         {
             return true;
         }

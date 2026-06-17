@@ -29,7 +29,7 @@ public class PlayerSquatAirState : PlayerSquatState
             stateMachine.ChangeState(player.squatIdleState);
         }
             
-        if (Input.GetButtonDown("Jump") && (player.jumpAirTimer > 0))
+        if (Input.GetButtonDown("Jump") && player.CheckJumpAirTime())
         {
             stateMachine.ChangeState(player.squatJumpState);
         }

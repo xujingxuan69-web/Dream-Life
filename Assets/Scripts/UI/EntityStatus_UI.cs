@@ -32,7 +32,7 @@ public class EntityStatus_UI : MonoBehaviour
 
     private void UpdateHealthUI()
     {
-        slider.maxValue = myStats.GetMaxHealthValue();
+        slider.maxValue = myStats.maxHealth;
         slider.value = myStats.currentHealth;
 
         if (slider.value <= 0 || slider.maxValue == slider.value)

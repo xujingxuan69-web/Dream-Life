@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Inventory_UI : MonoBehaviour
+public class Inventory_UI : MonoBehaviour   //!待办，装备界面
 {
     [Header("Inventory UI")]
     [SerializeField] private Transform formItemSlotParent;      //All the slots InChildren of inventorySlotParent

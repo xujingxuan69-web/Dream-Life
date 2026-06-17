@@ -12,6 +12,7 @@ public class Player : Entity
     #endregion
     #region Inspector
     public bool isBusy { get; private set; }
+
     [Header("Move Info")]
     public float moveSpeed = 5;
     public float squatMoveSpeedRate = 1.5f;
@@ -20,8 +21,11 @@ public class Player : Entity
 
     [Header("Jump Info")]
     public float jumpForce = 12;
-    public float jumpDuration = 0.1f;
-    public float jumpAirTimer { get; private set; }    //土狼时间技术器
+
+    public float jumpAirDuration = 0.1f;
+    private float lastJumpAirTime;    //土狼时间计时
+    
+    
     public float wallJumpDuration = 0.5f;
     private float defaultJumpForce;
 
@@ -34,17 +38,17 @@ public class Player : Entity
     public float comboWindow = 0.3f;
     public Vector2[] attackMovement;
     public float counterAttackDuration = .2f;
-    [SerializeField] private float counterAttackCoolDown = .5f;
-    public float counterAttackCooldownTimer { get; private set; }
+    [SerializeField] private float counterAttackCooldown = .7f;
+    private float lastCounterAttackTime;
 
     [Header("Collider Info")]
-    public Collider2D normalCollider;
+    public CapsuleCollider2D normalCollider;
+    public CircleCollider2D squatCollider;
 
     [Header("Squat Info")]
     [SerializeField] protected Transform headCheck;
     [SerializeField] protected float headCheckDistance;
     [SerializeField] protected float headCheckWidth;
-    [HideInInspector] public bool squatEnter;
     [HideInInspector] public float squatMoveSpeed;
     #endregion
     #region States
@@ -84,8 +88,13 @@ public class Player : Entity
     public PlayerTearsAttackState tearsAttackState { get; private set; }
     #endregion
     #endregion
-    #region playerFx
+    #region Component
+    public ItemDrop itemDrop { get; private set; }
     public PlayerFx playerFx { get; private set; }
+    public PlayerStats stats { get; private set; }
+    #endregion
+    #region Action
+    public System.Action onHealthFlaskUsed;
     #endregion
 
     protected override void Awake()
@@ -93,7 +102,6 @@ public class Player : Entity
         base.Awake();
 
         stateMachine = new PlayerStateMachine();
-        playerFx = GetComponent<PlayerFx>();
 
         idleState = new PlayerIdleState(this, stateMachine, "Idle");
         moveState = new PlayerMoveState(this, stateMachine, "Move");
@@ -121,13 +129,14 @@ public class Player : Entity
         tearsAimState = new PlayerTearsAimState(this, stateMachine, "TearsAim");
         tearsShootState = new PlayerTearsShootState(this, stateMachine, "TearsShoot");
         tearsAttackState = new PlayerTearsAttackState(this, stateMachine, "TearsAttack");
-
-        
     }
 
     protected override void Start()
     {
         base.Start();
+        itemDrop = GetComponent<ItemDrop>();
+        playerFx = GetComponent<PlayerFx>();
+        stats = GetComponent<PlayerStats>();
 
         manager = PlayerManager.instance;
         skill = SkillManager.instance;
@@ -137,23 +146,51 @@ public class Player : Entity
         defaultMoveSpeed = moveSpeed;
         defaultJumpForce = jumpForce;
         defaultDashSpeed = dashSpeed;
+
+        lastJumpAirTime = -jumpAirDuration;
+        lastCounterAttackTime = -counterAttackCooldown;
+
+        SetSquatCollider(false);
     }
 
     protected override void Update()
     {
         base.Update();
 
-        jumpAirTimer -= Time.deltaTime;
-        counterAttackCooldownTimer -= Time.deltaTime;
-
         stateMachine.currentState.Update();
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            onHealthFlaskUsed?.Invoke();
+        }
     }
 
-    public void SetJumpAirTimer() => jumpAirTimer = jumpDuration;
+    #region JumpAirTime
+    public void SetJumpAirTime() => lastJumpAirTime = Time.time;
 
-    public void SetCounterAttackTimer() => counterAttackCooldownTimer = counterAttackCoolDown;
+    public bool CheckJumpAirTime() => Time.time <= lastJumpAirTime + jumpAirDuration;
+    #endregion
+    #region CounterAttackTime
+    public void SetCounterAttackTime() => lastCounterAttackTime = Time.time;
+
+    public bool CheckCounterAttackTime() => Time.time > lastCounterAttackTime + counterAttackCooldown;
+    #endregion
 
     public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();
+
+    public void SetSquatCollider(bool _set)
+    {
+        if (_set)
+        {
+            normalCollider.enabled = false;
+            squatCollider.enabled = true;
+        }
+        else
+        {
+            normalCollider.enabled = true;
+            squatCollider.enabled = false;
+        }
+    }   //切换下蹲状态的Collider
 
     public IEnumerator BusyFor(float _seconds)
     {
@@ -163,6 +200,11 @@ public class Player : Entity
     }
 
     #region Collision Checks
+    public override bool IsGroundDetected()
+    {
+        return base.IsGroundDetected();
+    }
+
     public bool IsWallSlideDetected() => Physics2D.OverlapBox(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y),
             new Vector3(wallCheckDistance, wallCheckWidth * 0.7f), 0, whatIsGround)
         && Physics2D.OverlapBox(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y + wallCheckWidth * 0.425f),
@@ -195,6 +237,7 @@ public class Player : Entity
         stateMachine.ChangeState(deadState);
     }
 
+    #region Speed
     public override void SpeedSlowBy(float _slowPercentage)
     {
         base.SpeedSlowBy(_slowPercentage);
@@ -212,6 +255,7 @@ public class Player : Entity
         jumpForce = defaultJumpForce;
         dashSpeed = defaultDashSpeed;
     }
+    #endregion
 
     
 }

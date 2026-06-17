@@ -11,8 +11,6 @@ public class PlayerSquatExitState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        player.normalCollider.enabled = true;
-
         stateTimer = 0.3f;
         
         if (player.IsGroundDetected())
@@ -24,7 +22,7 @@ public class PlayerSquatExitState : PlayerState
     public override void Exit()
     {
         base.Exit();
-        player.squatEnter = false;
+        player.SetSquatCollider(false);
     }
 
     public override void Update()

@@ -32,7 +32,7 @@ public class PlayerSquatGroundedState : PlayerSquatState
 
         if (!player.IsGroundDetected())
         {
-            player.SetJumpAirTimer();
+            player.SetJumpAirTime();
             stateMachine.ChangeState(player.squatAirState);
         }
     }

@@ -40,7 +40,7 @@ public class Stat
         return finalValue;
     }
 
-    public void SetDefaultValue(int _value)
+    public void SetDefaultValue(int _value = 0)
     {
         baseValue = _value;
         onValueChanged?.Invoke();

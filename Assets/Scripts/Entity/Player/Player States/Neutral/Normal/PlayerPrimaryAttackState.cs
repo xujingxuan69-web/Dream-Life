@@ -7,7 +7,7 @@ public class PlayerPrimaryAttackState : PlayerState
 {
     private int comboCounter;
 
-    private float lastTimeAttacked;
+    private float lastTimeAttack;
     private bool attackInput;
     private float attackInputBuffer = 5f;
     private float attackInputTimer;
@@ -19,7 +19,7 @@ public class PlayerPrimaryAttackState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        if (comboCounter > 2 || Time.time >= lastTimeAttacked + player.comboWindow)
+        if (comboCounter > 2 || Time.time >= lastTimeAttack + player.comboWindow)
             comboCounter = 0;
 
         player.anim.SetInteger("ComboCounter",comboCounter);
@@ -44,7 +44,7 @@ public class PlayerPrimaryAttackState : PlayerState
         base.Exit();
         player.StartCoroutine("BusyFor", .1f);
         comboCounter++;
-        lastTimeAttacked = Time.time;
+        lastTimeAttack = Time.time;
     }
 
     public override void Update()

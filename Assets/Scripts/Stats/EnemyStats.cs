@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyStats : CharacterStats
 {
     private Enemy enemy;
+    private ItemDrop myDropSystem;
 
     [Header("Level details")]
     [SerializeField] private int level;
@@ -27,12 +28,12 @@ public class EnemyStats : CharacterStats
         base.Start();
 
         enemy = GetComponent<Enemy>();
-
+        myDropSystem = GetComponent<ItemDrop>();
     }
 
     private void ApplyLevelModifiers()
     {
-        Modify(maxHealth);
+        Modify(baseHealth);
         Modify(physicalDamage);
     }
 
@@ -50,6 +51,8 @@ public class EnemyStats : CharacterStats
     {
         base.Die();
         enemy.Die();
+
+        myDropSystem?.GenerateDeadDrop(enemy.IsGroundDetected());
     }
 
     #region Damage

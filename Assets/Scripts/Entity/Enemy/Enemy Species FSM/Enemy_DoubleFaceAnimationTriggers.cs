@@ -18,7 +18,7 @@ public class Enemy_DoubleFaceAnimationTriggers : MonoBehaviour
         foreach (var hit in colliders)
         {
             Player curPlayer = hit.GetComponent<Player>();
-            if (curPlayer != null && curPlayer.isInvincible == false)
+            if (curPlayer != null)
             {
                 PlayerStats _target = hit.GetComponent<PlayerStats>();
                 enemy.stats.DoDamage(_target, enemy.facingDir);

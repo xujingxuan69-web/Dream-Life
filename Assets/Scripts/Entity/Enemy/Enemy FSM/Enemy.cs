@@ -30,7 +30,8 @@ public class Enemy : Entity
 
 
     public EnemyStateMachine stateMachine { get; private set; }
-    public string lastAnimBoolName { get; private set; } 
+    public EnemyStats stats { get; private set; }
+    public string lastAnimBoolName { get; private set; }
 
     protected override void Awake()
     {
@@ -42,13 +43,13 @@ public class Enemy : Entity
     protected override void Start()
     {
         base.Start();
+        stats = GetComponent<EnemyStats>();
     }
 
     protected override void Update()
     {
         base.Update();
         stateMachine.currentState.Update();
-        
     }
 
     public virtual void AssignLastAnimName(string _animBoolName) => lastAnimBoolName = _animBoolName;

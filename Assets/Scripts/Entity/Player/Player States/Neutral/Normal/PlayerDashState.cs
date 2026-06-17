@@ -18,7 +18,7 @@ public class PlayerDashState : PlayerState
         player.manager.dashExtra = false;
         player.manager.jumpExtra = player.IsGroundDetected() || player.manager.jumpExtra;
 
-        player.normalCollider.enabled = true;   //取消Squat状态的Collider限制
+        player.SetSquatCollider(false);
     }
 
     public override void Exit()

@@ -35,7 +35,7 @@ public class PlayerAirState : PlayerState
             stateMachine.ChangeState(player.idleState);
         }
 
-        if (Input.GetButtonDown("Jump") && (player.manager.jumpExtra || player.jumpAirTimer > 0))
+        if (Input.GetButtonDown("Jump") && (player.manager.jumpExtra || player.CheckJumpAirTime()))
         {
             stateMachine.ChangeState(player.jumpState);
         }

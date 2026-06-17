@@ -28,7 +28,7 @@ public class PlayerMoveState : PlayerGroundedState
 
         player.SetVelocity(xInput * player.moveSpeed, rb.velocity.y);
 
-        if (Input.GetKeyDown(KeyCode.Q) && player.counterAttackCooldownTimer < 0)
+        if (Input.GetKeyDown(KeyCode.Q) && player.CheckCounterAttackTime())
         {
             stateMachine.ChangeState(player.counterAttackState);
             return;

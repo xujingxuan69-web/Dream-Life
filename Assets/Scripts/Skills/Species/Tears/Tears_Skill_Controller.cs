@@ -165,7 +165,7 @@ public class Tears_Skill_Controller : MonoBehaviour
 
     private void TearsSkillDamage(Enemy curEnemy)
     {
-        curEnemy.StartCoroutine(curEnemy.stats.AddTempModifier(curEnemy.stats.weak, 2, 5f));    //!添加虚弱效果进行Demo演示
+        curEnemy.stats.AddTempModifier(curEnemy.stats.weak, 2, 5f);    //!添加虚弱效果进行Demo演示
         player.stats.DoDamage(curEnemy.stats, (int)Mathf.Sign(rb.velocity.x), 1, 1, FormType.Grief);    //!泪滴的伤害系数需要修改
         curEnemy.StartCoroutine("FreezeTimeFor", freezeTimeDuration);
     }

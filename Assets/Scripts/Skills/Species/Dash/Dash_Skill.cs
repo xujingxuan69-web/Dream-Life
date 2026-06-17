@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Dash_Skill : Skill
 {
-    [SerializeField] private bool invincibleDash;
-
     public override bool CanUseSkill()
     {
         return base.CanUseSkill();
@@ -14,18 +12,9 @@ public class Dash_Skill : Skill
     public override void UseSkill()
     {
         base.UseSkill();
-        if (invincibleDash)
+        if (SkillManager.instance.clone.GetCloneOnDashStart())
         {
-            StartCoroutine(InvincibleDash());
+            player.stats.AddTempModifier(player.stats.untargetable, 1, player.dashDuration);
         }
-    }
-
-    private IEnumerator InvincibleDash()
-    {
-        Debug.Log("true");
-        player.SetInvincible(true);
-        yield return new WaitForSeconds(player.dashDuration);
-        player.SetInvincible(false);
-
     }
 }

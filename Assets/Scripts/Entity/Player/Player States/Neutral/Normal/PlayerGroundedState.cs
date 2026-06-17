@@ -27,11 +27,11 @@ public class PlayerGroundedState : PlayerState
     {
         base.Update();
 
-        player.SetJumpAirTimer();
+        player.SetJumpAirTime();
 
         if (!player.isBusy) //¹¥»÷½áÊøºóÒ¡
         {
-            if (Input.GetButtonDown("Jump") && player.jumpAirTimer > 0)
+            if (Input.GetButtonDown("Jump") && player.CheckJumpAirTime())
             {
                 player.manager.dashExtra = true;
                 stateMachine.ChangeState(player.jumpState);
@@ -49,7 +49,7 @@ public class PlayerGroundedState : PlayerState
         if (!player.IsGroundDetected())
         {
             player.manager.dashExtra = true;
-            player.SetJumpAirTimer();
+            player.SetJumpAirTime();
             stateMachine.ChangeState(player.airState);
         }
     }

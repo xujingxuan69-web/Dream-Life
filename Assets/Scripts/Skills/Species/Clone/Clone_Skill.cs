@@ -9,7 +9,7 @@ public class Clone_Skill : Skill
     [SerializeField] private GameObject clonePrefab;
     [SerializeField] private float cloneDuration;
     [Space]
-    [SerializeField] private bool createCloneOnDashStart;   //°üº¬³å´Ì²ÐÓ°¡¢²ÐÓ°¹¥»÷
+    [SerializeField] private bool createCloneOnDashStart;   //°üº¬³å´ÌÎÞ·¨Ñ¡ÖÐ¡¢³å´Ì²ÐÓ°¡¢²ÐÓ°¹¥»÷¡¢
     [SerializeField] private bool createCloneOnCounterAttack;
 
     public void CreateClone(Transform _clonePosition, int _facingDir, int _attackNumber = 0, Vector3 _offset = new Vector3())

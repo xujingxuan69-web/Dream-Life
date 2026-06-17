@@ -43,7 +43,7 @@ public class PlayerIdleState : PlayerGroundedState
         }
 
         #region Idle&Move Share
-        if (Input.GetKeyDown(KeyCode.Q) && player.counterAttackCooldownTimer < 0)
+        if (Input.GetKeyDown(KeyCode.Q) && player.CheckCounterAttackTime())
         {
             stateMachine.ChangeState(player.counterAttackState);
             return;

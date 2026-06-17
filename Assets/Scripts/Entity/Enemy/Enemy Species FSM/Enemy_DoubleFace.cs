@@ -9,7 +9,7 @@ public class Enemy_DoubleFace : Enemy
     public float battleTime;
     public float attackDistance;
     public float attackCooldown;
-    [HideInInspector] public float lastTimeAttacked;
+    [HideInInspector] public float lastTimeAttack;
 
     public RaycastHit2D hitFront { get; private set; }
     public RaycastHit2D hitBehind { get; private set; }
@@ -46,6 +46,8 @@ public class Enemy_DoubleFace : Enemy
     {
         base.Start();
         stateMachine.Initialize(idleState);
+
+        lastTimeAttack = -attackCooldown;
     }
 
     protected override void Update()

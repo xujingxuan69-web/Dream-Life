@@ -36,9 +36,7 @@ public class PlayerSquatEnterState : PlayerState
 
         if (stateTimer < 0)
         {
-            
-            player.normalCollider.enabled = false;
-            player.squatEnter = true;
+            player.SetSquatCollider(true);
             if (!player.IsGroundDetected())
             {
                 stateMachine.ChangeState(player.squatAirState);

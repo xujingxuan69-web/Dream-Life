@@ -19,7 +19,7 @@ public class PlayerCounterAttackState : PlayerState
 
         player.SetVelocity(0, rb.velocity.y);
 
-        player.SetCounterAttackTimer();
+        player.SetCounterAttackTime();
 
         player.anim.SetBool("SuccessCounterAttack", false);
     }

@@ -18,7 +18,6 @@ public class Entity : MonoBehaviour
     [SerializeField] protected Vector2 knockbackDirection;
     [SerializeField] protected float knockbackDuration;
     public bool isKnocked { get; private set; }
-    public bool isInvincible { get; private set; }
 
     [Header("Collision Info")]
     public Transform attackCheck;
@@ -39,10 +38,10 @@ public class Entity : MonoBehaviour
     public CapsuleCollider2D cd { get; private set; }
     public Collider2D[] colliders { get; private set; }
     
-    public CharacterStats stats { get; private set; }
-
-    public System.Action onFlipped;
+    
     #endregion
+    
+    public System.Action onFlipped;
 
     protected virtual void Awake()
     {
@@ -56,9 +55,7 @@ public class Entity : MonoBehaviour
         colliders = GetComponents<Collider2D>();
         anim = GetComponentInChildren<Animator>();
         sr = GetComponentsInChildren<SpriteRenderer>();
-        stats = GetComponent<CharacterStats>();
 
-        isInvincible = false;
         rb.gravityScale = gravity;
         originalConstraints = rb.constraints;
     }
@@ -181,8 +178,6 @@ public class Entity : MonoBehaviour
         Gizmos.DrawWireSphere(attackCheck.position, attackCheckRadius);
     }
     #endregion
-
-    public void SetInvincible(bool _isInvincible) => isInvincible = _isInvincible;
 
     public virtual void Die()
     {

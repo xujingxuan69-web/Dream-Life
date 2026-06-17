@@ -18,7 +18,7 @@ public class DoubleFaceAttackState : EnemyState
     public override void Exit()
     {
         base.Exit();
-        enemy.lastTimeAttacked = Time.time;
+        enemy.lastTimeAttack = Time.time;
     }
 
     public override void Update()
