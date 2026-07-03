@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50fa7e4cb012e4149b0764a55e76de3f, type: 3}
+  m_Name: BlackHole
+  m_EditorClassIdentifier: 
+  skillIcon: {fileID: 21300000, guid: a77f7555c7684c143bed11235844e9c1, type: 3}
+  skillName: "\u9ED1\u6D1E"
+  skillFormType: 2
+  skillType: 2
+  skillHotKey: 
+  skillFocusCost: 10
+  skillHealthCost: 0
+  skillCooldown: 5
+  skillDescription: "\u4EA7\u751F\u9ED1\u6D1E,\u5438\u5F15\u5E76\u7981\u9522\u654C\u4EBA,\u968F\u540E\u5FEB\u901F\u8FDE\u51FB\u88AB\u7981\u9522\u7684\u654C\u4EBA."

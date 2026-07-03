@@ -31,17 +31,54 @@ public class PlayerGroundedState : PlayerState
 
         if (!player.isBusy) //攻击结束后摇
         {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                stateMachine.ChangeState(player.useHealthFlaskState);
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q) && player.CheckCounterAttackTime())
+            {
+                stateMachine.ChangeState(player.counterAttackState);
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                if (player.GetPlayerForm() != FormType.Grief)
+                    stateMachine.ChangeState(player.primaryAttackState);
+                else
+                    stateMachine.ChangeState(player.tearsAimState);
+                return;
+            }
+
             if (Input.GetButtonDown("Jump") && player.CheckJumpAirTime())
             {
                 player.manager.dashExtra = true;
                 stateMachine.ChangeState(player.jumpState);
                 return;
             }
+
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                stateMachine.ChangeState(player.squatEnterState);
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.M))    //!demo暂时演示
+            {
+                stateMachine.ChangeState(player.tearsAimState);
+            }
+
+            if (Input.GetKeyDown(KeyCode.N) && player.skill.blackhole.CanUseSkill()) 
+            {
+                stateMachine.ChangeState(player.disappearState);
+                return;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.L) && player.skill.dash.CanUseSkill()) //冲刺取消后摇
         {
-            player.skill.clone.CreateCloneOnDashStart();
             stateMachine.ChangeState(player.dashState);
             return;
         }

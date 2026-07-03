@@ -16,7 +16,8 @@ public class ItemData : ScriptableObject    //In Unity Asset,Create Item with da
     public ItemType itemType;
     public string itemName;
     public Sprite icon;
-    public string description;
+    public string usage;  //使用说明
+    public string detail; //详细信息
 
     [Range(0, 100)]
     public float dropChance;

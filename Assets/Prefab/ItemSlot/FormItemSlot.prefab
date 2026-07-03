@@ -63,6 +63,8 @@ MonoBehaviour:
   itemImage: {fileID: 538477994618616031}
   itemText: {fileID: 2581611675567163555}
   selectionOutline: {fileID: 0}
+  originalSprite: {fileID: 21300000, guid: d62dab5632f46a7458cd986b9ff85dec, type: 3}
+  originalColor: {r: 0.4745098, g: 0.4745098, b: 0.4745098, a: 1}
   effectList: []
   item:
     data: {fileID: 0}

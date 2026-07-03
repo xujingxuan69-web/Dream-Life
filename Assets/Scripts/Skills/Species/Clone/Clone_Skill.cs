@@ -8,36 +8,20 @@ public class Clone_Skill : Skill
     [Header("Clone Info")]
     [SerializeField] private GameObject clonePrefab;
     [SerializeField] private float cloneDuration;
-    [Space]
-    [SerializeField] private bool createCloneOnDashStart;   //包含冲刺无法选中、冲刺残影、残影攻击、
-    [SerializeField] private bool createCloneOnCounterAttack;
 
     public void CreateClone(Transform _clonePosition, int _facingDir, int _attackNumber = 0, Vector3 _offset = new Vector3())
     {
         GameObject newClone = Instantiate(clonePrefab);
 
-        newClone.GetComponent<Clone_Skill_Controller>().SetupClone(_clonePosition, cloneDuration, _attackNumber, _facingDir, _offset, player);
+        if (_attackNumber == 0)
+            newClone.GetComponent<Clone_Skill_Controller>().SetupClone(_clonePosition, cloneDuration, _attackNumber, _facingDir, _offset, player);
+        else if (_offset != new Vector3())
+            newClone.GetComponent<Clone_Skill_Controller>().SetupClone(_clonePosition, cloneDuration, _attackNumber, player.primaryAttackState.attackDir, _offset, player);
+        else
+            newClone.GetComponent<Clone_Skill_Controller>().SetupClone(_clonePosition, cloneDuration, _attackNumber, _facingDir, _facingDir * Vector2.left, player);
     }
 
-    public bool GetCloneOnDashStart() => createCloneOnDashStart;
-
-    public void CreateCloneOnDashStart(int _comboCounter = 0)
-    {
-        if (createCloneOnDashStart)
-        {
-            CreateClone(player.transform, player.facingDir, _comboCounter);
-        }
-    }
-
-    public void CreateCloneOnCounterAttack(Transform _enemyTransform, int _facingDir)
-    {
-        if (createCloneOnCounterAttack)
-        {
-            StartCoroutine(CreateCloneWithDelay(_enemyTransform, _facingDir, _facingDir * Vector2.right));
-        }
-    }
-
-    private IEnumerator CreateCloneWithDelay(Transform _transform, int _dir, Vector3 _offset)
+    public IEnumerator CreateCloneWithDelay(Transform _transform, int _dir, Vector3 _offset)
     {
         yield return new WaitForSeconds(.4f);
         CreateClone(_transform, _dir * -1, 1, _offset);

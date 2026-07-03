@@ -119,7 +119,7 @@ public class Blackhole_Skill_Controller : MonoBehaviour
 
             enemy.stats.AddTempModifier(enemy.stats.vulnerable, 1, 3f);   //!暂时添加易伤效果进行Demo演示
 
-            SkillManager.instance.clone.CreateClone(enemy.transform, randDir, randAttackCount, randDir * Vector2.left * 1f);
+            SkillManager.instance.clone.CreateClone(enemy.transform, randDir, randAttackCount);
 
             attacksAmount--;
 

@@ -191,12 +191,12 @@ public class Enemy : Entity
     #endregion
     #region Collisions Check
     public override bool IsGroundDetected() => Physics2D.OverlapBox(new Vector2(groundCheck.position.x, groundCheck.position.y - groundCheckDistance * 0.5f),
-            new Vector2(groundCheckWidth * 0.6f, groundCheckDistance), 0, whatIsGround);
+            new Vector2(groundCheckWidth * 0.6f, groundCheckDistance), 0, whatIsGround | whatIsFakeGround);
 
     public bool IsGroundFrontDetected() => Physics2D.OverlapBox(new Vector2(groundCheck.position.x + groundCheckWidth * 0.35f * facingDir, groundCheck.position.y - groundCheckDistance * 0.5f),
-            new Vector2(groundCheckWidth * 0.1f, groundCheckDistance), 0, whatIsGround);
+            new Vector2(groundCheckWidth * 0.1f, groundCheckDistance), 0, whatIsGround | whatIsFakeGround);
     public bool IsGroundBehindDetected() => Physics2D.OverlapBox(new Vector2(groundCheck.position.x - groundCheckWidth * 0.35f * facingDir, groundCheck.position.y - groundCheckDistance * 0.5f),
-            new Vector2(groundCheckWidth * 0.1f, groundCheckDistance), 0, whatIsGround);
+            new Vector2(groundCheckWidth * 0.1f, groundCheckDistance), 0, whatIsGround | whatIsFakeGround);
 
     public override void OnDrawGizmosGroundCheck()
     {

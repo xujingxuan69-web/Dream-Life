@@ -36,7 +36,6 @@ public class PlayerWallSlideState : PlayerState
         if (Input.GetKeyDown(KeyCode.L))
         {
             player.manager.jumpExtra = true;
-            player.skill.clone.CreateCloneOnDashStart();
             stateMachine.ChangeState(player.dashState);
             return;
         }

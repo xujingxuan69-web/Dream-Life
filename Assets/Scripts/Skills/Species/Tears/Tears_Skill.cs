@@ -82,6 +82,9 @@ public class Tears_Skill : Skill
 
     public void CreateTears(int _facingDir)
     {
+        player.stats.DecreaseFormFocusBy(10);   //!注意删除，仅用于demo演示
+
+
         float angle = Mathf.Atan2(finalDir.y, finalDir.x) * Mathf.Rad2Deg;
 
         GameObject newTears = Instantiate(tearsPrefab, 

@@ -29,6 +29,7 @@ public class Entity : MonoBehaviour
     [SerializeField] protected float wallCheckDistance;
     [SerializeField] protected float wallCheckWidth;
     [SerializeField] protected LayerMask whatIsGround;
+    [SerializeField] protected LayerMask whatIsFakeGround;
 
     #region Components
     public EntityFx fx { get; private set; }
@@ -146,10 +147,10 @@ public class Entity : MonoBehaviour
     #endregion
     #region Check
     public virtual bool IsGroundDetected() => Physics2D.OverlapBox(new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance * 0.5f),
-            new Vector3(groundCheckWidth, groundCheckDistance), 0, whatIsGround);
+            new Vector3(groundCheckWidth, groundCheckDistance), 0, whatIsGround | whatIsFakeGround);
 
     public virtual bool IsWallDetected() => Physics2D.OverlapBox(new Vector3(wallCheck.position.x + facingDir * wallCheckDistance * 0.5f, wallCheck.position.y),
-            new Vector3(wallCheckDistance, wallCheckWidth), 0, whatIsGround);
+            new Vector3(wallCheckDistance, wallCheckWidth), 0, whatIsGround | whatIsFakeGround);
 
     public virtual void OnDrawGizmos()
     {

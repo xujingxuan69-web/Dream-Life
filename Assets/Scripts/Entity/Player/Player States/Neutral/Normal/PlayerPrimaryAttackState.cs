@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class PlayerPrimaryAttackState : PlayerState
 {
-    private int comboCounter;
+    public int attackDir;
+    public int comboCounter;
 
     private float lastTimeAttack;
     private bool attackInput;
@@ -65,12 +66,12 @@ public class PlayerPrimaryAttackState : PlayerState
 
         if (Input.GetKeyDown(KeyCode.L) && player.skill.dash.CanUseSkill())
         {//这里是冲刺取消攻击并创造分身
-            player.skill.clone.CreateCloneOnDashStart(comboCounter + 1);
+            attackDir = player.facingDir;
             if (Input.GetAxisRaw("Horizontal") == -player.facingDir)
             {
                 player.Flip();
             }
-            stateMachine.ChangeState(player.dashState);
+            stateMachine.ChangeState(player.dashAttackState);
         }
 
         if (triggerCalled)

@@ -11,6 +11,7 @@ public class PlayerDashState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        player.skill.dash.CreateCloneOnDashStart();
 
         rb.gravityScale = 0;
         stateTimer = player.dashDuration;

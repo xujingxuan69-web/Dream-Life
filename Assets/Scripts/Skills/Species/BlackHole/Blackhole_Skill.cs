@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Blackhole_Skill : Skill
 {
+    [Header("Blackhole Skill")]
+    [SerializeField] private bool blackholeUnlocked;
+    [SerializeField] private SkillTreeSlot_UI blackholeUnlockButton;
+
+    [Header("Blackhole Setting")]
     [SerializeField] private GameObject blackholePrefab;
     [SerializeField] private float originalSize;
     [SerializeField] private float maxSize;
@@ -14,8 +20,18 @@ public class Blackhole_Skill : Skill
 
     private Blackhole_Skill_Controller currentBlackhole;
 
+    #region Unlock
+    private void UnlockBlackhole()
+    {
+        blackholeUnlocked = true;
+    }
+    #endregion
+
     public override bool CanUseSkill()
     {
+        if (!blackholeUnlocked)
+            return false;
+
         return base.CanUseSkill();
     }
 
@@ -25,12 +41,16 @@ public class Blackhole_Skill : Skill
 
         SetCooldownOn(false);
 
+        player.stats.DecreaseFormFocusBy(50);   //!注意删除，仅用于demo演示
         CreateBlackhole();
     }
 
     protected override void Start()
     {
         base.Start();
+
+        if (blackholeUnlockButton != null)
+            blackholeUnlockButton.unlockSkill += UnlockBlackhole;
     }
 
     protected override void Update()
@@ -57,5 +77,11 @@ public class Blackhole_Skill : Skill
         }
 
         return false;
+    }
+
+    private void OnDestroy()
+    {
+        if (blackholeUnlockButton != null)
+            blackholeUnlockButton.unlockSkill -= UnlockBlackhole;
     }
 }

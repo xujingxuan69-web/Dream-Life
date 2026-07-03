@@ -23,6 +23,7 @@ public class PlayerSquatAirState : PlayerSquatState
         base.Update();
 
         player.SetVelocity(xInput * player.squatMoveSpeed, rb.velocity.y);
+        Debug.Log(xInput);
 
         if (player.IsGroundDetected())
         {

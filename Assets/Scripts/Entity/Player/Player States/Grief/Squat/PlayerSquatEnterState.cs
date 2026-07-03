@@ -39,6 +39,7 @@ public class PlayerSquatEnterState : PlayerState
             player.SetSquatCollider(true);
             if (!player.IsGroundDetected())
             {
+                player.squatMoveSpeed = player.moveSpeed;
                 stateMachine.ChangeState(player.squatAirState);
             }
             else

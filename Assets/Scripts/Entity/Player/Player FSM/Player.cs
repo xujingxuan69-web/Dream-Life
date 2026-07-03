@@ -50,6 +50,10 @@ public class Player : Entity
     [SerializeField] protected float headCheckDistance;
     [SerializeField] protected float headCheckWidth;
     [HideInInspector] public float squatMoveSpeed;
+
+    [Header("Form Info")]
+    [SerializeField] private FormType currentForm;
+    
     #endregion
     #region States
     public PlayerStateMachine stateMachine { get; private set; }
@@ -63,10 +67,13 @@ public class Player : Entity
 
     public PlayerWallJumpState wallJumpState { get; private set; }
     public PlayerDashState dashState { get; private set; }
+    public PlayerDashAttackState dashAttackState { get; private set; }
 
     public PlayerPrimaryAttackState primaryAttackState { get; private set; }
     public PlayerAttackTransState attackTransState { get; private set; }
     public PlayerCounterAttackState counterAttackState { get; private set; }
+
+    public PlayerUseHealthFlaskState useHealthFlaskState { get; private set; }
 
     public PlayerDisappearState disappearState { get; private set; }
     public PlayerShowState showState { get; private set; }
@@ -95,12 +102,14 @@ public class Player : Entity
     #endregion
     #region Action
     public System.Action onHealthFlaskUsed;
+    public System.Action onFormChanged;
     #endregion
 
     protected override void Awake()
     {
         base.Awake();
 
+        stats = GetComponent<PlayerStats>(); 
         stateMachine = new PlayerStateMachine();
 
         idleState = new PlayerIdleState(this, stateMachine, "Idle");
@@ -109,10 +118,12 @@ public class Player : Entity
         airState = new PlayerAirState(this, stateMachine, "Jump");
         wallSlideState = new PlayerWallSlideState(this, stateMachine, "WallSlide");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
+        dashAttackState = new PlayerDashAttackState(this, stateMachine, "Dash");
         wallJumpState = new PlayerWallJumpState(this, stateMachine, "Jump");
         primaryAttackState = new PlayerPrimaryAttackState(this, stateMachine, "Attack");
         attackTransState = new PlayerAttackTransState(this, stateMachine, "AttackTrans");
         counterAttackState = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
+        useHealthFlaskState = new PlayerUseHealthFlaskState(this, stateMachine, "Idle"); //!喝药动作没做，暂用站立
         disappearState = new PlayerDisappearState(this, stateMachine, "Disappear");
         showState = new PlayerShowState(this, stateMachine, "Show");
 
@@ -136,7 +147,7 @@ public class Player : Entity
         base.Start();
         itemDrop = GetComponent<ItemDrop>();
         playerFx = GetComponent<PlayerFx>();
-        stats = GetComponent<PlayerStats>();
+        
 
         manager = PlayerManager.instance;
         skill = SkillManager.instance;
@@ -158,11 +169,7 @@ public class Player : Entity
         base.Update();
 
         stateMachine.currentState.Update();
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            onHealthFlaskUsed?.Invoke();
-        }
+        
     }
 
     #region JumpAirTime
@@ -213,7 +220,7 @@ public class Player : Entity
             new Vector3(wallCheckDistance, wallCheckWidth * 0.15f), 0, whatIsGround);
 
     public bool IsHeadDetected() => Physics2D.OverlapBox(new Vector3(headCheck.position.x, headCheck.position.y + headCheckDistance * 0.5f),
-            new Vector3(headCheckWidth, headCheckDistance), 0, whatIsGround);
+            new Vector3(headCheckWidth, headCheckDistance), 0, whatIsGround | whatIsFakeGround);
 
     public override void OnDrawGizmosWallCheck()
     {
@@ -257,5 +264,15 @@ public class Player : Entity
     }
     #endregion
 
-    
+    #region Form
+    public FormType GetPlayerForm() => currentForm;
+
+    public void SetPlayerForm(FormType _form)
+    {
+        if (currentForm == _form)
+            return;
+        currentForm = _form;
+        onFormChanged?.Invoke();
+    }
+    #endregion
 }

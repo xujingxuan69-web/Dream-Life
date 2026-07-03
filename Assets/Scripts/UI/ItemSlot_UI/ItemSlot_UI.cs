@@ -8,34 +8,26 @@ using UnityEngine.UI;
 
 public class ItemSlot_UI : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler//引入鼠标接口
 {
-    [SerializeField] private Image itemImage;
-    [SerializeField] private TextMeshProUGUI itemText;
-    [SerializeField] private Image selectionOutline;
+    [SerializeField] protected Image itemImage;
+    [SerializeField] protected TextMeshProUGUI itemText;
+    [SerializeField] protected Image selectionOutline;
+    [SerializeField] protected Sprite originalSprite;
+    [SerializeField] protected UnityEngine.Color originalColor;
 
-    [SerializeField] private List<ItemEffect> effectList = new List<ItemEffect>();  //!显示装备的词条
+    [SerializeField] protected List<ItemEffect> effectList = new List<ItemEffect>();  //!显示装备的词条
 
     public InventoryItem item;
-    private Sprite originalSprite;
-    private UnityEngine.Color color = UnityEngine.Color.white;
-    private UnityEngine.Color originalColor;
+    protected UnityEngine.Color color = UnityEngine.Color.white;
 
     public int slotIndex;    //用于定位当前槽位的索引，方便inventory进行操作
     protected bool isChosen;    //用于判定当前槽位是否被选中
 
 
-    private UI ui;
+    protected Menu_UI menu_ui;
 
     protected virtual void Awake()
     {
-        ui = GetComponentInParent<UI>();
-
-        if (itemImage.sprite != null)
-        {
-            originalSprite = itemImage.sprite;
-            originalColor = itemImage.color;
-        }
-
-        UpdateSlot(null);
+        menu_ui = UIManager.Instance.menu;
     }
 
     protected virtual void Update()
@@ -48,6 +40,12 @@ public class ItemSlot_UI : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
 
     public void UpdateSlot(InventoryItem _newItem)  //Update itemSlot UI -- image + stacksize,and index
     {
+
+        if (_newItem == null)
+        {
+            Debug.Log(Time.time+" Trigger with UpdateSlot Null");
+        }
+
         item = _newItem;
 
         if (item != null)
@@ -88,7 +86,7 @@ public class ItemSlot_UI : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
         Inventory.instance.RemoveItemAt(slotIndex, newItem.itemType);
         player.itemDrop.DropItem(newItem, player.facingDir, player.IsGroundDetected());
 
-        ui.itemToolTip.ShowToolTip(item?.data);
+        menu_ui.itemToolTip.ShowToolTip(item?.data);
     }
 
     #region OnPointerEvents
@@ -104,18 +102,18 @@ public class ItemSlot_UI : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
         isChosen = true;
         //!调用Inventory_UI的instance，表示当前FormItemSlot/equipmentSlot被选中，让其记录下当前FormItemSlot/equipmentSlot的index
 
-        if (ui == null)
+        if (menu_ui == null)
             Debug.Log("UI null");
-        else if (ui.itemToolTip == null)
+        else if (menu_ui.itemToolTip == null)
             Debug.Log("UI itemToolTip null");
 
-        ui.itemToolTip.ShowToolTip(item?.data);
+        menu_ui.itemToolTip.ShowToolTip(item?.data);
     }
 
     public virtual void OnPointerExit(PointerEventData eventData)
     {
         isChosen = false;
-        ui.itemToolTip.HideToolTip();
+        menu_ui.itemToolTip.HideToolTip();
     }
 
     public virtual void OnPointerMove(PointerEventData eventData)

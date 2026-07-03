@@ -92,7 +92,7 @@ public class ItemTooltip_UI : MonoBehaviour
 
     private void ShowFormItemTooltip(ItemData _item)
     {
-        itemDescription.text = _item.description;
+        itemDescription.text = _item.usage;
         if (Inventory.instance.formItemDictionary.TryGetValue(_item, out InventoryItem value))
         {
             itemUsableAmount_FormItem.text = $"{value.usableAmount}/{value.stackSize}";
@@ -104,7 +104,7 @@ public class ItemTooltip_UI : MonoBehaviour
 
     private void ShowUsableItemTooltip(ItemData _item)
     {
-        itemDescription.text = _item.description;
+        itemDescription.text = _item.usage;
         usablePanel_UsableItem.SetActive(true);
     }
     #endregion

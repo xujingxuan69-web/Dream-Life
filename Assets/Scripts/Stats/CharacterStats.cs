@@ -96,12 +96,10 @@ public class CharacterStats : MonoBehaviour
         baseFormFocus.onValueChanged += OnAllFormFocusChanged;  //When FormFocus Stat changed,Update MaxFormFocus and UI
         maxFormFocusRate.onValueChanged += OnAllFormFocusChanged;
         onFormFocusChanged += SetMaxFormFocusValue;
-    }
 
-    protected virtual void Start()
-    {
+        #region SetDefaultValue
         vulnerable.SetDefaultValue();
-        weak.SetDefaultValue(); 
+        weak.SetDefaultValue();
         slowdown.SetDefaultValue();
 
         invincible.SetDefaultValue();
@@ -115,8 +113,14 @@ public class CharacterStats : MonoBehaviour
 
         currentFormFocus = maxFormFocus;
         currentHealth = maxHealth;
-        
+
         isDead = false;
+        #endregion
+    }
+
+    protected virtual void Start()
+    {
+        
     }
 
     protected virtual void Update()
@@ -346,7 +350,7 @@ public class CharacterStats : MonoBehaviour
         else if (_statType == StatType.physicalDamage) return physicalDamage.GetValue() + strength.GetValue();
         else if (_statType == StatType.formDamage) return formDamage.GetValue() + intelligence.GetValue();
         else if (_statType == StatType.critChance) return critChance.GetValue() + agility.GetValue();
-        else if (_statType == StatType.critPower) return critPower.GetValue() + strength.GetValue();
+        else if (_statType == StatType.critPower) return critPower.GetValue() + strength.GetValue() ;
 
         return -1;
     }

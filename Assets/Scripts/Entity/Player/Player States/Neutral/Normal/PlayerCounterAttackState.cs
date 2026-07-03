@@ -48,7 +48,6 @@ public class PlayerCounterAttackState : PlayerState
                     if (canCreateClone)
                     {
                         canCreateClone = false;
-                        player.skill.clone.CreateCloneOnCounterAttack(hit.transform, player.facingDir);
                     }
                 }
             }

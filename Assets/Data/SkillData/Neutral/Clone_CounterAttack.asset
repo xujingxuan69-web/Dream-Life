@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50fa7e4cb012e4149b0764a55e76de3f, type: 3}
+  m_Name: Clone_CounterAttack
+  m_EditorClassIdentifier: 
+  skillIcon: {fileID: 21300000, guid: 6419f98552cef734bb66de86d5bf197c, type: 3}
+  skillName: "\u53CD\u51FB"
+  skillFormType: 0
+  skillType: 1
+  skillHotKey: Q
+  skillFocusCost: 0
+  skillHealthCost: 0
+  skillCooldown: 1
+  skillDescription: "\u6210\u529F\u62DB\u67B6\u540E,\u5728\u654C\u4EBA\u8EAB\u540E\u751F\u6210\u6B8B\u5F71\u8FDB\u884C\u653B\u51FB."

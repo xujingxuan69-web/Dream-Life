@@ -12,7 +12,7 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
+  - FakeGround
   - 
   - Player
   - Fx
@@ -45,11 +45,11 @@ TagManager:
   - name: Background
     uniqueID: 3325406271
     locked: 0
-  - name: BgFx
-    uniqueID: 3053128113
-    locked: 0
   - name: Ground
     uniqueID: 2165026633
+    locked: 0
+  - name: BgFx
+    uniqueID: 3053128113
     locked: 0
   - name: Enemy
     uniqueID: 1489980567
@@ -60,6 +60,12 @@ TagManager:
   - name: Item
     uniqueID: 2811200579
     locked: 0
+  - name: UpBackground
+    uniqueID: 264790259
+    locked: 0
   - name: Fx
     uniqueID: 3895798471
+    locked: 0
+  - name: UI
+    uniqueID: 234266717
     locked: 0

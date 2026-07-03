@@ -24,37 +24,12 @@ public class PlayerMoveState : PlayerGroundedState
 
     public override void Update()
     {
-        base.Update();
 
         player.SetVelocity(xInput * player.moveSpeed, rb.velocity.y);
-
-        if (Input.GetKeyDown(KeyCode.Q) && player.CheckCounterAttackTime())
-        {
-            stateMachine.ChangeState(player.counterAttackState);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            stateMachine.ChangeState(player.primaryAttackState);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            stateMachine.ChangeState(player.tearsAimState);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.N) && player.skill.blackhole.CanUseSkill())
-        {
-            stateMachine.ChangeState(player.disappearState);
-            return;
-        }
-        //以上为idle和move共用
 
         if (xInput == 0)
             stateMachine.ChangeState(player.idleState);
         
+        base.Update();
     }
 }

@@ -11,41 +11,60 @@ public class Inventory : MonoBehaviour
 
     #region Slot
     [Header("HealthFlask_UsableItem")]
-    public List<InventoryItem> healthFlask;
-    public List<ItemData> startingHealthFlask;
-    public Dictionary<ItemData, InventoryItem> healthFlaskDictionary;
-    public Dictionary<int, InventoryItem> healthFlaskIndexDictionary;
+    public List<InventoryItem> healthFlask = new List<InventoryItem>();
+    public List<ItemData> startingHealthFlask = new List<ItemData>();
+
+    public Dictionary<ItemData, InventoryItem> healthFlaskDictionary = 
+        new Dictionary<ItemData, InventoryItem>();
+
+    public Dictionary<int, InventoryItem> healthFlaskIndexDictionary = 
+        new Dictionary<int, InventoryItem>();
 
     [Header("FormItem_UsableItem")]
-    public List<InventoryItem> formItems;  //Get item stacksize
-    public List<ItemData> startingFormItem;
-    public Dictionary<ItemData, InventoryItem> formItemDictionary; //ItemData related to InventoryItem stacksize
-    public Dictionary<int, InventoryItem> formItemIndexDictionary;
+    public List<InventoryItem> formItems = new List<InventoryItem>();  //Get item stacksize
+    public List<ItemData> startingFormItem = new List<ItemData>();
+
+    public Dictionary<ItemData, InventoryItem> formItemDictionary = 
+        new Dictionary<ItemData, InventoryItem>(); //ItemData related to InventoryItem stacksize
+
+    public Dictionary<int, InventoryItem> formItemIndexDictionary = 
+        new Dictionary<int, InventoryItem>();
 
     //!formItem要添加与equipment一样的按位置添加、替换和删除，替换的formItem会继承原有formItem的stackSize，删除后会直接销毁，不会丢弃出东西
 
     [Header("Equipment")]
-    public List<InventoryItem> equipment;
-    public List<ItemData_Equipment> startingEquipment;
-    public Dictionary<int, InventoryItem> equipmentIndexDictionary;
+    public List<InventoryItem> equipment = new List<InventoryItem>();
+    public List<ItemData_Equipment> startingEquipment = new List<ItemData_Equipment>();
+    public Dictionary<int, InventoryItem> equipmentIndexDictionary = new Dictionary<int, InventoryItem>();
 
+    [Header("InventoryItem")]
+    public List<InventoryItem> inventoryItems = new List<InventoryItem>();
+    public List<ItemData> startingInventoryItems  = new List<ItemData>();
+    public GameObject inventoryItemsParentPrefab;
+    private int inventoryItemsPrefabCount = 4;
 
     [Header("Inventory UI")]
     [SerializeField] private Transform healthFlaskSlotParent;
     [SerializeField] private Transform formItemSlotParent;      //In IventoryPanel,All the slots InChildren of inventorySlotParent
     [SerializeField] private Transform equipmentSlotParent;
+    [SerializeField] private Transform inventoryItemsSlotParent;
     [SerializeField] private Transform statSlotParent;
 
     private ItemSlot_UI[] healthFlaskSlot;
     private ItemSlot_UI[] formItemSlot;     //Update itemSlot UI
     private ItemSlot_UI[] equipmentSlot;
     private StatSlot_UI[] statSlot;
-    
+
+    private List<InventorySlot_UI> inventorySlotList = new List<InventorySlot_UI>();
+
     #endregion
 
     [Header("Item Effect")]
-    public List<ItemEffect_Equipment> possibleEquipmentEffects;   //通过Inentory分配可能存在的词条
-    private Dictionary<EffectType, List<ItemEffect_Equipment>> effectTypeDictionary;
+    public List<ItemEffect_Equipment> possibleEquipmentEffects = 
+        new List<ItemEffect_Equipment>();   //通过Inentory分配可能存在的词条
+
+    private Dictionary<EffectType, List<ItemEffect_Equipment>> effectTypeDictionary = 
+        new Dictionary<EffectType, List<ItemEffect_Equipment>>();
 
 
     [Header("Item Cooldown")]
@@ -58,27 +77,13 @@ public class Inventory : MonoBehaviour
             instance = this;
         else
             Destroy(gameObject);
-    }
-
-    private void Start()
-    {
-        healthFlask = new List<InventoryItem>();
-        healthFlaskDictionary = new Dictionary<ItemData, InventoryItem>();
-        healthFlaskIndexDictionary = new Dictionary<int, InventoryItem>();
-
-        formItems = new List<InventoryItem>();
-        formItemDictionary = new Dictionary<ItemData, InventoryItem>();
-        formItemIndexDictionary = new Dictionary<int, InventoryItem>();
-
-        equipment = new List<InventoryItem>();
-        equipmentIndexDictionary = new Dictionary<int, InventoryItem>();
 
         healthFlaskSlot = healthFlaskSlotParent?.GetComponentsInChildren<HealthFlask_UI>();
         formItemSlot = formItemSlotParent?.GetComponentsInChildren<FormItem_UI>();
         equipmentSlot = equipmentSlotParent?.GetComponentsInChildren<Equipment_UI>();
         statSlot = statSlotParent?.GetComponentsInChildren<StatSlot_UI>();
 
-        effectTypeDictionary = new Dictionary<EffectType, List<ItemEffect_Equipment>>();
+        inventorySlotList.AddRange(inventoryItemsSlotParent.GetComponentsInChildren<InventorySlot_UI>());
 
         player = PlayerManager.instance.player;
         player.stats.vitality.onValueChanged += UpdateStatSlotUI;
@@ -107,6 +112,12 @@ public class Inventory : MonoBehaviour
         {
             AddEquipment(startingEquipment[i]);
         }
+        for (int i = 0; i < startingInventoryItems.Count; i++)
+        {
+            AddInventoryItems(startingInventoryItems[i]);
+        }
+
+
     }
     private void SortEffectsType()
     {
@@ -132,6 +143,10 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < healthFlaskSlot.Length; i++)
         {
             healthFlaskSlot[i].SetDefaultIndex(i);
+        }
+        for (int i = 0; i < inventorySlotList.Count; i++)
+        {
+            inventorySlotList[i].SetDefaultIndex(i);
         }
     }
     #endregion
@@ -172,6 +187,31 @@ public class Inventory : MonoBehaviour
                 equipmentSlot[i].UpdateSlot(item);
             }
         }
+        else if (_itemType == ItemType.InventoryItem)
+        {
+            CheckSlotForInventoryItems();
+
+            for (int i = 0; i < inventoryItems.Count; i++)
+            {
+                InventoryItem item = (i < inventoryItems.Count) ? inventoryItems[i] : null;
+                inventorySlotList[i].UpdateSlot(item);
+            }
+        }
+    }
+
+    private void CheckSlotForInventoryItems()
+    {
+        while (inventoryItems.Count > 4 * inventoryItemsPrefabCount)
+        {
+            GameObject newPrefab = Instantiate(inventoryItemsParentPrefab, inventoryItemsSlotParent);
+            var newSlots = newPrefab.GetComponentsInChildren<InventorySlot_UI>();
+            foreach (var slot in newSlots)
+            {
+                slot.SetDefaultIndex(inventorySlotList.Count);
+                inventorySlotList.Add(slot);
+            }
+            inventoryItemsPrefabCount++;
+        }
     }
 
     private void UpdateStatSlotUI()
@@ -197,6 +237,8 @@ public class Inventory : MonoBehaviour
             case ItemType.Equipment:
                 slot = equipmentSlot;
                 break;
+            case ItemType.InventoryItem:
+                return 1;
             default:
                 slot = null;
                 break;
@@ -227,6 +269,9 @@ public class Inventory : MonoBehaviour
                 break;
             case ItemType.Equipment:
                 AddEquipment(_item);
+                break;
+            case ItemType.InventoryItem:
+                AddInventoryItems(_item);
                 break;
         }
     }
@@ -362,6 +407,17 @@ public class Inventory : MonoBehaviour
     }
     #endregion
 
+    #region AddInventoryItems
+    private void AddInventoryItems(ItemData _item)
+    {
+        InventoryItem newItem = new InventoryItem(_item);
+        inventoryItems.Add(newItem);
+        UpdateSlotUI(ItemType.InventoryItem);
+    }
+
+
+    #endregion
+
     #endregion
     #region RemoveItem
     public void RemoveItemAt(int _slotIndex, ItemType _type)
@@ -424,7 +480,7 @@ public class Inventory : MonoBehaviour
         {
             Debug.Log("Warning: Wrong Remove Equipment");
         }
-        UpdateSlotUI(value.data.itemType);
+        UpdateSlotUI(ItemType.Equipment);
     }
     #endregion
 

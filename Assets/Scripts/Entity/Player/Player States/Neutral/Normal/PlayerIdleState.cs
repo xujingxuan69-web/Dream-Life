@@ -21,7 +21,7 @@ public class PlayerIdleState : PlayerGroundedState
 
     public override void Update()
     {
-        base.Update();
+        
 
         if (rb.velocity.x != 0 && !player.isKnocked)
         {
@@ -37,35 +37,6 @@ public class PlayerIdleState : PlayerGroundedState
             stateMachine.ChangeState(player.moveState);
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            stateMachine.ChangeState(player.squatEnterState);
-        }
-
-        #region Idle&Move Share
-        if (Input.GetKeyDown(KeyCode.Q) && player.CheckCounterAttackTime())
-        {
-            stateMachine.ChangeState(player.counterAttackState);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            stateMachine.ChangeState(player.primaryAttackState);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            stateMachine.ChangeState(player.tearsAimState);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.N) && player.skill.blackhole.CanUseSkill())
-        {
-            stateMachine.ChangeState(player.disappearState);
-            return;
-        }
-        #endregion
+        base.Update();  //·ÀÖ¹Ë³Ðòµ¼ÖÂµÄÒÆ¶¯ÑÓ³Ù
     }
 }
